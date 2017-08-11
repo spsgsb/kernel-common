@@ -169,7 +169,7 @@ static int __init test_ecdh_sample(struct crypto_kpp *tfm, const u8 priv_a[32],
 		ret = -EINVAL;
 
 out:
-	kfree(dhkey_a);
+	kfree(tmp);
 	return ret;
 }
 
