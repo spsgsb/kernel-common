@@ -1,7 +1,7 @@
 /*
  * arch/arm64/boot/dts/amlogic/g12a_s905d2_u200_superbird.dts
  *
- * Copyright (C) 2019 Spotify AB. All rights reserved.
+ * Copyright (C) 2017 Amlogic, Inc. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,8 +169,10 @@
 		};
 	};
 
+	/* Spotify modifications start */
 	gpio-keys {
 		compatible = "gpio-keys";
+		status = "okay";
 
 		preset1 {
 			label = "GPIO Key preset1";
@@ -220,6 +222,18 @@
 			gpios = <&gpio GPIOZ_7 GPIO_ACTIVE_LOW>;
 		};
 	};
+
+	rotary@0 {
+			compatible = "rotary-encoder";
+			gpios = <&gpio GPIOZ_8 GPIO_ACTIVE_LOW>,
+				<&gpio GPIOZ_9 GPIO_ACTIVE_LOW>;
+			linux,axis = <0>; /* REL_X */
+			rotary-encoder,encoding = "gray";
+			rotary-encoder,relative-axis;
+			wakeup-source = <0>;
+	};
+
+	/* Spotify modifications end */
 
 	cvbsout {
 		compatible = "amlogic, cvbsout-g12a";
@@ -388,9 +402,10 @@
 		};
 	};
 
+	/* Spotify disabled */
 	gpio_keypad{
 		compatible = "amlogic, gpio_keypad";
-		status = "okay";
+		status = "disabled";
 		scan_period = <20>;
 		key_num = <1>;
 		key_name = "power";
@@ -399,6 +414,7 @@
 		detect_mode = <0>;/*0:polling mode, 1:irq mode*/
 	};
 
+	/* Spotify disabled */
 	adc_keypad {
 		compatible = "amlogic, adc_keypad";
 		status = "disabled";
@@ -1026,18 +1042,39 @@
 		status = "okay";
 };
 
+/* Spotify edit */
 &i2c0 {
 	status = "okay";
 	pinctrl-names="default";
-	pinctrl-0=<&i2c0_master_pins2>;
+	pinctrl-0=<&i2c0_master_pins1>;
 	clock-frequency = <400000>;
 
 	gt9xx@5d {
 		compatible = "goodix,gt9xx";
 		status = "okay";
 		reg = <0x5d>;
-		reset-gpio = <&gpio GPIOZ_9 0x00>;
-		irq-gpio = <&gpio GPIOZ_3 0x00>;
+		interrupt-parent = <&gpio>;
+		interrupts = <17 0x2008>;
+		goodix,rst-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_LOW>;
+		goodix,irq-gpio = <&gpio GPIOZ_4 GPIO_ACTIVE_HIGH>;
+		goodix,cfg-group0 = [ /* THIS IS WRONG */
+			42 D0 02 00 05 05 75 01 01 0F 24
+			0F 64 3C 03 05 00 00 00 02 00 00
+			00 16 19 1C 14 8C 0E 0E 24 00 31
+			0D 00 00 00 83 33 1D 00 41 00 00
+			00 00 00 08 0A 00 2B 1C 3C 94 D5
+			03 08 00 00 04 93 1E 00 82 23 00
+			74 29 00 69 2F 00 5F 37 00 5F 20
+			40 60 00 F0 40 30 55 50 27 00 00
+			00 00 00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 14 19 00 00
+			50 50 02 04 06 08 0A 0C 0E 10 12
+			14 16 18 1A 1C 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 00 00 1D
+			1E 1F 20 21 22 24 26 28 29 2A 1C
+			18 16 14 13 12 10 0F 0C 0A 08 06
+			04 02 00 00 00 00 00 00 00 00 00
+			00 00 00 00 00 00 00 00 9C 01];
 	};
 
 	ftxx@38 {
@@ -1313,6 +1350,7 @@
 		};
 	};
 
+	/* Spotify edit */
 	tdmb_mclk: tdmb_mclk {
 		mux { /* GPIOA_0 re-mapped to button */
 			groups = "mclk0_a";
@@ -1320,8 +1358,10 @@
 			drive-strength = <2>;
 		};
 	};
+	/* Spotify edit (MAYBE THESE GROUPS SHOULD BE GPIOA_1 etc.) */
+	/* See pinctrl-meson-g12a.c in amlogic drivers */
 	tdmout_b: tdmout_b {
-		mux { /* GPIOA_1, GPIOA_2, GPIOA_3 re-mapped to button*/
+		mux { /* GPIOA_1, GPIOA_2, GPIOA_3 re-mapped to button */
 			groups = "tdmb_sclk",
 				"tdmb_fs",
 				"tdmb_dout0";
@@ -1330,6 +1370,7 @@
 		};
 	};
 
+	/* Spotify edit */
 	tdmin_b:tdmin_b {
 		mux { /* GPIOA_4 re-mapped to button*/
 			groups = "tdmb_din1"
@@ -1381,14 +1422,14 @@
 	 *	};
 	 *};
 	 */
-
+	/* Spotify edit */
 	spotify_buttons: spbuttons {
-		mux { /* GPIOA_5 GPIO_A6 */
+		mux { /* GPIOA_5 GPIOA_6 */
 			groups = "pdm_din3_a", "pdm_din2_a";
 			function = "gpio_periphs";
 		};
 	};
-
+	/* Spotify edit */
 	spotify_rotary: sprotary {
 		mux {
 			groups = "eth_rxd2_rgmii",
@@ -1398,13 +1439,15 @@
 		};
 	};
 
+	/* Spotify edit */
 	spotify_touch: sptouch {
-		mux {
+		mux { /* GPIOZ_0 GPIOZ_1 */
 			groups = "eth_mdc", "eth_mdio";
 			function = "i2c0";
 		};
 	};
 
+	/* Spotify edit */
 	pdmin: pdmin {
 		mux { /* gpioa_7, gpioa_8, gpioa_9*/
 			groups = "pdm_din0_a",
