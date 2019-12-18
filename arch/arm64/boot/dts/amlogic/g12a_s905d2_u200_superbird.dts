@@ -1053,28 +1053,13 @@
 		compatible = "goodix,gt9xx";
 		status = "okay";
 		reg = <0x5d>;
-		interrupt-parent = <&gpio>;
-		interrupts = <17 0x2008>;
+		/* not sure this interrupt mapping is needed
+		 *interrupt-parent = <&gpio_intc>;
+		 *interrupts = <64 IRQ_TYPE_EDGE_FALLING>;
+		 */
 		goodix,rst-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_LOW>;
 		goodix,irq-gpio = <&gpio GPIOZ_4 GPIO_ACTIVE_HIGH>;
-		goodix,cfg-group0 = [ /* THIS IS WRONG */
-			42 D0 02 00 05 05 75 01 01 0F 24
-			0F 64 3C 03 05 00 00 00 02 00 00
-			00 16 19 1C 14 8C 0E 0E 24 00 31
-			0D 00 00 00 83 33 1D 00 41 00 00
-			00 00 00 08 0A 00 2B 1C 3C 94 D5
-			03 08 00 00 04 93 1E 00 82 23 00
-			74 29 00 69 2F 00 5F 37 00 5F 20
-			40 60 00 F0 40 30 55 50 27 00 00
-			00 00 00 00 00 00 00 00 00 00 00
-			00 00 00 00 00 00 00 14 19 00 00
-			50 50 02 04 06 08 0A 0C 0E 10 12
-			14 16 18 1A 1C 00 00 00 00 00 00
-			00 00 00 00 00 00 00 00 00 00 1D
-			1E 1F 20 21 22 24 26 28 29 2A 1C
-			18 16 14 13 12 10 0F 0C 0A 08 06
-			04 02 00 00 00 00 00 00 00 00 00
-			00 00 00 00 00 00 00 00 9C 01];
+		/* config group should not be needed */
 	};
 
 	ftxx@38 {
@@ -1541,8 +1526,10 @@
 	/** 0: normal, 1: otg+dwc3 host only, 2: otg+dwc3 device only*/
 	controller-type = <3>;
 };
+
+/* disabled for spotify */
 &ethmac {
-	status = "okay";
+	status = "disabled";
 	pinctrl-names = "internal_eth_pins";
 	pinctrl-0 = <&internal_eth_pins>;
 	mc_val = <0x4be04>;
