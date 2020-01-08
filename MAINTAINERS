@@ -14853,3 +14853,7 @@ F:	arch/arm64/boot/dts/amlogic/g12a_s905x2_u212.dts
 F:	arch/arm64/boot/dts/amlogic/g12a_s905x2_u212_1g.dts
 F:	arch/arm/boot/dts/amlogic/sm1_s905x3_ac213.dts
 F:	arch/arm64/boot/dts/amlogic/sm1_s905x3_ac213.dts
+
+SPOTIFY SUPERBIRD DTS
+M:  Jimmy Wahlberg <jimmywa@spotify.com>
+F:  arch/arm64/boot/dts/amlogic/g12a_s905d_u200_superbird.dts
