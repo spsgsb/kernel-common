@@ -720,12 +720,23 @@
 			};
 		};
 
+		/* Spotify Audio Start */
+		aml-audio-card,widgets =
+			/* PDM_DIN0 */
+			"Microphone", "Left Microphones",
+			/* PDM_DIN1 */
+			"Microphone", "Right Microphones";
+		aml-audio-card,routing =
+			"PDM_DIN0", "Left Microphones",
+			"PDM_DIN1", "Right Microphones";
+
 		aml-audio-card,dai-link@3 {
 			mclk-fs = <64>;
 			/* suffix-name, sync with android audio hal
 			 * what's the dai link used for
 			 */
 			suffix-name = "alsaPORT-pdm";
+
 			cpu {
 				sound-dai = <&aml_pdm>;
 			};
@@ -733,6 +744,7 @@
 				sound-dai = <&pdm_codec>;
 			};
 		};
+		/* Spotify Audio End */
 
 		aml-audio-card,dai-link@4 {
 			mclk-fs = <128>;
