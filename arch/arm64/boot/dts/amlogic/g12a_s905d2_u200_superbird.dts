@@ -1351,7 +1351,7 @@
 	/* Spotify edit */
 	tdmb_mclk: tdmb_mclk {
 		mux { /* GPIOA_0 re-mapped to button */
-			groups = "mclk0_a";
+			groups = "GPIOA_0";
 			function = "gpio_periphs";
 			drive-strength = <2>;
 		};
@@ -1360,9 +1360,9 @@
 	/* See pinctrl-meson-g12a.c in amlogic drivers */
 	tdmout_b: tdmout_b {
 		mux { /* GPIOA_1, GPIOA_2, GPIOA_3 re-mapped to button */
-			groups = "tdmb_sclk",
-				"tdmb_fs",
-				"tdmb_dout0";
+			groups = "GPIOA_1",
+				"GPIOA_2",
+				"GPIOA_3";
 			function = "gpio_periphs";
 			drive-strength = <2>;
 		};
@@ -1371,7 +1371,7 @@
 	/* Spotify edit */
 	tdmin_b:tdmin_b {
 		mux { /* GPIOA_4 re-mapped to button*/
-			groups = "tdmb_din1"
+			groups = "GPIOA_4"
 				/*,"tdmb_slv_sclk", "tdmb_slv_fs"*/;
 			function = "gpio_periphs";
 			drive-strength = <2>;
@@ -1423,16 +1423,16 @@
 	/* Spotify edit */
 	spotify_buttons: spbuttons {
 		mux { /* GPIOA_5 GPIOA_6 */
-			groups = "pdm_din3_a", "pdm_din2_a";
+			groups = "GPIOA_5", "GPIOA_6";
 			function = "gpio_periphs";
 		};
 	};
 	/* Spotify edit */
 	spotify_rotary: sprotary {
 		mux {
-			groups = "eth_rxd2_rgmii",
-				"eth_rgmii_tx_clk",
-				"eth_txen";
+			groups = "GPIOZ_7",
+				"GPIOZ_8",
+				"GPIOZ_9";
 			function = "gpio_periphs";
 		};
 	};
@@ -1440,7 +1440,7 @@
 	/* Spotify edit */
 	spotify_touch: sptouch {
 		mux { /* GPIOZ_0 GPIOZ_1 */
-			groups = "eth_mdc", "eth_mdio";
+			groups = "i2c0_sda_z0", "i2c0_sck_z1";
 			function = "i2c0";
 		};
 	};
