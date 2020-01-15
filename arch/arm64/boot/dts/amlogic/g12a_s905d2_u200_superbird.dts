@@ -1070,8 +1070,8 @@
 		 *interrupt-parent = <&gpio_intc>;
 		 *interrupts = <64 IRQ_TYPE_EDGE_FALLING>;
 		 */
-		goodix,rst-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_LOW>;
-		goodix,irq-gpio = <&gpio GPIOZ_4 GPIO_ACTIVE_HIGH>;
+		reset-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_LOW>;
+		irq-gpio = <&gpio GPIOZ_4 GPIO_ACTIVE_HIGH>;
 		/* config group should not be needed */
 	};
 
