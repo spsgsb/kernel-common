@@ -280,17 +280,17 @@
 		compatible = "amlogic, bt-dev";
 		dev_name = "bt-dev";
 		status = "okay";
-		gpio_reset = <&gpio       GPIOX_17       GPIO_ACTIVE_HIGH>;
-		gpio_hostwake = <&gpio       GPIOX_19       GPIO_ACTIVE_HIGH>;
+		gpio_reset = <&gpio	   GPIOX_17	   GPIO_ACTIVE_HIGH>;
+		gpio_hostwake = <&gpio	   GPIOX_19	   GPIO_ACTIVE_HIGH>;
 	};
 
 	wifi{
 		compatible = "amlogic, aml_wifi";
 		dev_name = "aml_wifi";
 		status = "okay";
-		interrupt_pin = <&gpio       GPIOX_7       GPIO_ACTIVE_HIGH>;
+		interrupt_pin = <&gpio	   GPIOX_7	   GPIO_ACTIVE_HIGH>;
 		irq_trigger_type = "GPIO_IRQ_LOW";
-		power_on_pin = <&gpio       GPIOX_6       GPIO_ACTIVE_HIGH>;
+		power_on_pin = <&gpio	   GPIOX_6	   GPIO_ACTIVE_HIGH>;
 		dhd_static_buf;	//if use bcm wifi, config dhd_static_buf
 		pinctrl-names = "default";
 		pinctrl-0 = <&pwm_e_pins>;
@@ -368,9 +368,9 @@
 		status = "disabled";
 		reg = <0x0 0xffe02000 0x0 0x7c>;
 		clocks = <&clkc CLKID_BT656_COMP>,
-		      <&clkc CLKID_BT656>;
+			  <&clkc CLKID_BT656>;
 		clock-names = "cts_bt656_clk1",
-		      "clk_gate_bt656";
+			  "clk_gate_bt656";
 		/* bt656in1, bt656in2 */
 		bt656in1 {
 		bt656_id = <1>;
@@ -728,14 +728,14 @@
 			 */
 			suffix-name = "alsaPORT-pdm";
 
-            aml-audio-card,widgets =
-                /* PDM_DIN0 */
-                "Microphone", "Left Microphones",
-                /* PDM_DIN1 */
-                "Microphone", "Right Microphones";
-            aml-audio-card,routing =
-                "PDM_DIN0", "Left Microphones",
-                "PDM_DIN1", "Right Microphones";
+			aml-audio-card,widgets =
+				/* PDM_DIN0 */
+				"Microphone", "Left Microphones",
+				/* PDM_DIN1 */
+				"Microphone", "Right Microphones";
+			aml-audio-card,routing =
+				"PDM_DIN0", "Left Microphones",
+				"PDM_DIN1", "Right Microphones";
 
 			cpu {
 				sound-dai = <&aml_pdm>;
@@ -1445,12 +1445,12 @@
 		};
 	};
 
-    spotify_touch_gpio: spotify_touch_gpio {
-        mux {
-            groups = "GPIOZ_3", "GPIOZ_4";
-            function = "gpio_periphs";
-        };
-    };
+	spotify_touch_gpio: spotify_touch_gpio {
+		mux {
+			groups = "GPIOZ_3", "GPIOZ_4";
+			function = "gpio_periphs";
+		};
+	};
 
 	/* Spotify edit */
 	pdmin: pdmin {
