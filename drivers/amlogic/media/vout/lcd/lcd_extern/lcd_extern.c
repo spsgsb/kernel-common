@@ -1541,6 +1541,10 @@ static int lcd_extern_add_mipi(struct aml_lcd_extern_driver_s *ext_drv)
 #ifdef CONFIG_AMLOGIC_LCD_EXTERN_MIPI_TL050FHV02CT
 		ret = aml_lcd_extern_mipi_tl050fhv02ct_probe(ext_drv);
 #endif
+	} else if (strcmp(ext_drv->config->name, "mipi_ILI9806E") == 0) {
+#ifdef CONFIG_AMLOGIC_LCD_EXTERN_MIPI_ILI9806E
+		ret = aml_lcd_extern_mipi_ILI9806E_probe(ext_drv);
+#endif
 	} else {
 		EXTERR("invalid driver name: %s\n", ext_drv->config->name);
 		ret = -1;

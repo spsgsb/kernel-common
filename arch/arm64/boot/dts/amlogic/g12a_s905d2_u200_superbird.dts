@@ -280,17 +280,17 @@
 		compatible = "amlogic, bt-dev";
 		dev_name = "bt-dev";
 		status = "okay";
-		gpio_reset = <&gpio	   GPIOX_17	   GPIO_ACTIVE_HIGH>;
-		gpio_hostwake = <&gpio	   GPIOX_19	   GPIO_ACTIVE_HIGH>;
+		gpio_reset = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
+		gpio_hostwake = <&gpio GPIOX_19 GPIO_ACTIVE_HIGH>;
 	};
 
 	wifi{
 		compatible = "amlogic, aml_wifi";
 		dev_name = "aml_wifi";
 		status = "okay";
-		interrupt_pin = <&gpio	   GPIOX_7	   GPIO_ACTIVE_HIGH>;
+		interrupt_pin = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
 		irq_trigger_type = "GPIO_IRQ_LOW";
-		power_on_pin = <&gpio	   GPIOX_6	   GPIO_ACTIVE_HIGH>;
+		power_on_pin = <&gpio GPIOX_6 GPIO_ACTIVE_HIGH>;
 		dhd_static_buf;	//if use bcm wifi, config dhd_static_buf
 		pinctrl-names = "default";
 		pinctrl-0 = <&pwm_e_pins>;
@@ -368,9 +368,9 @@
 		status = "disabled";
 		reg = <0x0 0xffe02000 0x0 0x7c>;
 		clocks = <&clkc CLKID_BT656_COMP>,
-			  <&clkc CLKID_BT656>;
+				<&clkc CLKID_BT656>;
 		clock-names = "cts_bt656_clk1",
-			  "clk_gate_bt656";
+					"clk_gate_bt656";
 		/* bt656in1, bt656in2 */
 		bt656in1 {
 		bt656_id = <1>;
@@ -1403,15 +1403,17 @@
 			function = "tdmc_in";
 		};
 	};
+	/* GPIOH_5 Spotify edit */
+	/*
+	 *spdifin: spdifin {
+	 *	mux {/* GPIOH_5 */
+	 *		groups = "spdif_in_h";
+	 *		function = "spdif_in";
+	 *	};
+	 *};
+	 */
 
-	spdifin: spdifin {
-		mux {/* GPIOH_5 */
-			groups = "spdif_in_h";
-			function = "spdif_in";
-		};
-	};
-
-	/* GPIOH_4 */
+	/* GPIOH_4 Spotify edit */
 	/*
 	 * spdifout: spdifout {
 	 *	mux {
@@ -1438,7 +1440,7 @@
 	};
 
 	/* Spotify edit */
-	spotify_touch_i2c: sptouch_i2c {
+	spotify_touch_i2c: spotify_touch_i2c {
 		mux { /* GPIOZ_0 GPIOZ_1 */
 			groups = "i2c0_sda_z0", "i2c0_sck_z1";
 			function = "i2c0";
@@ -1459,6 +1461,15 @@
 			"pdm_din1_a",
 			"pdm_dclk_a";
 			function = "pdm";
+		};
+	};
+
+	/* Spotify edit */
+	bl_enable: bl_enable {
+		mux {
+			pins = "GPIOH_4";
+			function = "gpio_periphs";
+			output-high;
 		};
 	};
 
@@ -1742,3 +1753,6 @@
 	status = "okay";
 };
 
+&amhdmitx {
+	status = "disabled";
+}
