@@ -1059,7 +1059,7 @@
 &i2c0 {
 	status = "okay";
 	pinctrl-names="default";
-	pinctrl-0=<&i2c0_master_pins1>;
+	pinctrl-0=<&spotify_touch_i2c>;
 	clock-frequency = <400000>;
 
 	gt9xx@5d {
