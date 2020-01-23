@@ -1478,6 +1478,19 @@
 		};
 	};
 
+	spotify_disabled_pins_h: spotify_disabled_pins_h {
+		mux {
+			pins = "GPIOH_0",
+				"GPIOH_1",
+				"GPIOH_2",
+				"GPIOH_3",
+				"GPIOH_6",
+				"GPIOH_7",
+				"GPIOH_8";
+			output-low;
+		};
+	};
+
 	spotify_buzzer: spotify_buzzer {
 		mux {
 			groups = "pwm_c_c4";
