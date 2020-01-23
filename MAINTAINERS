@@ -14857,4 +14857,6 @@ F:	arch/arm64/boot/dts/amlogic/sm1_s905x3_ac213.dts
 SPOTIFY SUPERBIRD DTS
 M:  Jimmy Wahlberg <jimmywa@spotify.com>
 M:  Mike Goeppner <mikegoeppner@spotify.com>
+F:  arch/arm64/boot/dts/amlogic/mesong12a_skt-panel.dtsi
 F:  arch/arm64/boot/dts/amlogic/g12a_s905d_u200_superbird.dts
+F:  drivers/amlogic/media/vout/lcd/lcd_extern/mipi_ILI9806E.c
