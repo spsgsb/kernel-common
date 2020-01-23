@@ -18,7 +18,7 @@
 /dts-v1/;
 
 #include "mesong12a.dtsi"
-#include "partition_mbox_normal.dtsi"
+#include "partition_mbox_superbird.dtsi"
 #include "mesong12a_skt-panel.dtsi"
 
 / {
@@ -746,6 +746,22 @@
 		};
 		/* Spotify Audio End */
 
+		aml-audio-card,dai-link@4 {
+			status = "disabled";
+			mclk-fs = <128>;
+			continuous-clock;
+			/* suffix-name, sync with android audio hal
+			 * what's the dai link used for
+			 */
+			suffix-name = "alsaPORT-spdifb2hdmi";
+			cpu {
+				sound-dai = <&aml_spdif>;
+				system-clock-frequency = <6144000>;
+			};
+			codec {
+				sound-dai = <&dummy_codec>;
+			};
+		};
 		/* spdif_b to hdmi, only playback */
 		aml-audio-card,dai-link@5 {
 			mclk-fs = <128>;
@@ -1189,6 +1205,27 @@
 		status = "disabled";
 	};
 
+	aml_spdif: spdif {
+		compatible = "amlogic, g12a-snd-spdif-a";
+		#sound-dai-cells = <0>;
+		clocks = <&clkc CLKID_MPLL0
+				&clkc CLKID_FCLK_DIV4
+				&clkaudio CLKID_AUDIO_SPDIFIN
+				&clkaudio CLKID_AUDIO_SPDIFOUT
+				&clkaudio CLKID_AUDIO_SPDIFIN_CTRL
+				&clkaudio CLKID_AUDIO_SPDIFOUT_CTRL>;
+		clock-names = "sysclk", "fixed_clk", "gate_spdifin",
+				"gate_spdifout", "clk_spdifin", "clk_spdifout";
+		interrupts =
+				<GIC_SPI 151 IRQ_TYPE_EDGE_RISING>;
+
+		interrupt-names = "irq_spdifin";
+		pinctrl-names = "spdif_pins",
+					"spdif_pins_mute";
+		pinctrl-0 = <&spdifout &spdifin>;
+		pinctrl-1 = <&spdifout_a_mute>;
+		status = "disabled";
+	};
 	aml_spdif_b: spdif_b {
 		compatible = "amlogic, g12a-snd-spdif-b";
 		#sound-dai-cells = <0>;
@@ -1369,6 +1406,22 @@
 		};
 	};
 
+	/* GPIOH_5 */
+
+	spdifin: spdifin {
+		status = "disabled";
+	};
+
+
+	/* GPIOH_4 */
+	/*
+	 * spdifout: spdifout {
+	 *	mux {
+	 *		groups = "spdif_out_h";
+	 *		function = "spdif_out";
+	 *	};
+	 *};
+	 */
 	/* Spotify edit */
 	spotify_buttons: spbuttons {
 		mux { /* GPIOA_5 GPIOA_6 */
@@ -1398,6 +1451,51 @@
 		mux {
 			groups = "GPIOZ_3", "GPIOZ_4";
 			function = "gpio_periphs";
+		};
+	};
+
+	spotify_disabled_pins_c: spotify_disabled_pins_c {
+		mux {
+			pins = "GPIOC_0",
+				"GPIOC_1",
+				"GPIOC_2",
+				"GPIOC_3",
+				"GPIOC_5",
+				"GPIOC_6",
+				"GPIOC_7";
+			output-low;
+		};
+	};
+
+	spotify_disabled_pins_a: spotify_disabled_pins_a {
+		mux {
+			pins = "GPIOA_10",
+				"GPIOA_11",
+				"GPIOA_12",
+				"GPIOA_13",
+				"GPIOA_14",
+				"GPIOA_15";
+			output-low;
+		};
+	};
+
+	spotify_disabled_pins_h: spotify_disabled_pins_h {
+		mux {
+			pins = "GPIOH_0",
+				"GPIOH_1",
+				"GPIOH_2",
+				"GPIOH_3",
+				"GPIOH_6",
+				"GPIOH_7",
+				"GPIOH_8";
+			output-low;
+		};
+	};
+
+	spotify_buzzer: spotify_buzzer {
+		mux {
+			groups = "pwm_c_c4";
+			function = "pwm_c";
 		};
 	};
 
