@@ -747,6 +747,7 @@
 		/* Spotify Audio End */
 
 		aml-audio-card,dai-link@4 {
+			status = "disabled";
 			mclk-fs = <128>;
 			continuous-clock;
 			/* suffix-name, sync with android audio hal
@@ -1223,7 +1224,7 @@
 					"spdif_pins_mute";
 		pinctrl-0 = <&spdifout &spdifin>;
 		pinctrl-1 = <&spdifout_a_mute>;
-		status = "okay";
+		status = "disabled";
 	};
 	aml_spdif_b: spdif_b {
 		compatible = "amlogic, g12a-snd-spdif-b";
@@ -1404,12 +1405,12 @@
 		};
 	};
 
+	/* GPIOH_5 */
+
 	spdifin: spdifin {
-		mux {/* GPIOH_5 */
-			groups = "spdif_in_h";
-			function = "spdif_in";
-		};
+		status = "disabled";
 	};
+
 
 	/* GPIOH_4 */
 	/*
@@ -1449,6 +1450,51 @@
 		mux {
 			groups = "GPIOZ_3", "GPIOZ_4";
 			function = "gpio_periphs";
+		};
+	};
+
+	spotify_disabled_pins_c: spotify_disabled_pins_c {
+		mux {
+			pins = "GPIOC_0",
+				"GPIOC_1",
+				"GPIOC_2",
+				"GPIOC_3",
+				"GPIOC_5",
+				"GPIOC_6",
+				"GPIOC_7";
+			output-low;
+		};
+	};
+
+	spotify_disabled_pins_a: spotify_disabled_pins_a {
+		mux {
+			pins = "GPIOA_10",
+				"GPIOA_11",
+				"GPIOA_12",
+				"GPIOA_13",
+				"GPIOA_14",
+				"GPIOA_15";
+			output-low;
+		};
+	};
+
+	spotify_disabled_pins_h: spotify_disabled_pins_h {
+		mux {
+			pins = "GPIOH_0",
+				"GPIOH_1",
+				"GPIOH_2",
+				"GPIOH_3",
+				"GPIOH_6",
+				"GPIOH_7",
+				"GPIOH_8";
+			output-low;
+		};
+	};
+
+	spotify_buzzer: spotify_buzzer {
+		mux {
+			groups = "pwm_c_c4";
+			function = "pwm_c";
 		};
 	};
 
