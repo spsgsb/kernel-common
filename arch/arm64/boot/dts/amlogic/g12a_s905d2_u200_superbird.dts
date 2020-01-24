@@ -1045,7 +1045,7 @@
 
 &meson_fb {
 	status = "okay";
-	display_size_default = <1920 1080 1920 2160 32>;
+	display_size_default = <480 800 480 1600 24>;
 	mem_size = <0x00800000 0x1980000 0x100000 0x100000 0x800000>;
 	logo_addr = "0x7f800000";
 	mem_alloc = <0>;
@@ -1060,7 +1060,7 @@
 &i2c0 {
 	status = "okay";
 	pinctrl-names="default";
-	pinctrl-0=<&i2c0_master_pins1>;
+	pinctrl-0=<&spotify_touch_i2c>;
 	clock-frequency = <400000>;
 
 	gt9xx@5d {
