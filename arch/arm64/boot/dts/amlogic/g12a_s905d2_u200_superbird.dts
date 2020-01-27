@@ -1067,13 +1067,10 @@
 		compatible = "goodix,gt9xx";
 		status = "okay";
 		reg = <0x5d>;
-		/* not sure this interrupt mapping is needed
-		 *interrupt-parent = <&gpio_intc>;
-		 *interrupts = <64 IRQ_TYPE_EDGE_FALLING>;
-		 */
+		interrupt-parent = <&gpio_intc>;
+		interrupts = <64 IRQ_TYPE_EDGE_FALLING>;
 		reset-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_LOW>;
 		irq-gpio = <&gpio GPIOZ_4 GPIO_ACTIVE_HIGH>;
-		/* config group should not be needed */
 	};
 
 	ftxx@38 {
