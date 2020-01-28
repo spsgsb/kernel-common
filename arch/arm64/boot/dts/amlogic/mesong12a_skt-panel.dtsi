@@ -47,7 +47,7 @@
 		 * power value:(0=output low, 1=output high, 2=input)
 		 * power delay:(unit in ms)
 		 */
-		lcd_cpu-gpios = <&gpio GPIOZ_5 GPIO_ACTIVE_HIGH
+		lcd_cpu-gpios = <&gpio GPIOZ_5 GPIO_ACTIVE_LOW
 				&gpio GPIOZ_6 GPIO_ACTIVE_HIGH>;
 		lcd_cpu_gpio_names = "GPIOZ_5","GPIOZ_6";
 
