@@ -1467,7 +1467,7 @@
 				"GPIOC_5",
 				"GPIOC_6",
 				"GPIOC_7";
-			output-low;
+			bias-pull-down;
 		};
 	};
 
@@ -1479,7 +1479,7 @@
 				"GPIOA_13",
 				"GPIOA_14",
 				"GPIOA_15";
-			output-low;
+			bias-pull-down;
 		};
 	};
 
@@ -1492,7 +1492,7 @@
 				"GPIOH_6",
 				"GPIOH_7",
 				"GPIOH_8";
-			output-low;
+			bias-pull-down;
 		};
 	};
 
