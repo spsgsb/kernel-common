@@ -819,6 +819,22 @@
 	};
 };
 
+&i2c2 {
+	status = "okay";
+	pinctrl-names="default";
+	pinctrl-0=<&i2c2_master_pins2>
+	clock-frequency= <400000>;
+
+	vl6180@29 {
+		compatible = "st,vl6180";
+		reg = <0x29>;
+
+	};
+
+};
+
+
+
 &i2c3 {
 	status = "okay";
 	pinctrl-names="default";
