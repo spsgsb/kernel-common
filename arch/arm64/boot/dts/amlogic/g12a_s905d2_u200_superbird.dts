@@ -1450,6 +1450,13 @@
 			function = "gpio_periphs";
 		};
 	};
+	
+	spotify_lcd_vdd_pin: spotify_lcd_vdd_pin {
+		mux {
+			pins = "GPIOZ_6";
+			bias-pull-up;
+		};
+	};
 
 	spotify_disabled_pins_c: spotify_disabled_pins_c {
 		mux {
