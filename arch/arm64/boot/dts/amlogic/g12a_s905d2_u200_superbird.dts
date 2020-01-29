@@ -659,67 +659,6 @@
 			};
 		};
 
-		aml-audio-card,dai-link@1 {
-			format = "i2s";// "dsp_a";
-			mclk-fs = <256>;
-			//continuous-clock;
-			//bitclock-inversion;
-			//frame-inversion;
-			bitclock-master = <&aml_tdmb>;
-			frame-master = <&aml_tdmb>;
-			//bitclock-master = <&tdmbcodec>;
-			//frame-master = <&tdmbcodec>;
-			/* suffix-name, sync with android audio hal
-			 * what's the dai link used for
-			 */
-			suffix-name = "alsaPORT-i2s";
-			cpu {
-				sound-dai = <&aml_tdmb>;
-				dai-tdm-slot-tx-mask = <1 1>;
-				dai-tdm-slot-rx-mask = <1 1>;
-				dai-tdm-slot-num = <2>;
-				/*
-				 * dai-tdm-slot-tx-mask =
-				 *	<1 1 1 1 1 1 1 1>;
-				 * dai-tdm-slot-rx-mask =
-				 *	<1 1 1 1 1 1 1 1>;
-				 * dai-tdm-slot-num = <8>;
-				 */
-				dai-tdm-slot-width = <32>;
-				system-clock-frequency = <12288000>;
-			};
-			/* Removed Spotify */
-			//tdmbcodec: codec {
-			//	sound-dai = <&dummy_codec &dummy_codec
-			//	&amlogic_codec &ad82584f_62>;
-			//};
-		};
-
-		aml-audio-card,dai-link@2 {
-			format = "i2s";
-			mclk-fs = <256>;
-			//continuous-clock;
-			//bitclock-inversion;
-			//frame-inversion;
-			bitclock-master = <&aml_tdmc>;
-			frame-master = <&aml_tdmc>;
-			/* suffix-name, sync with android audio hal
-			 * what's the dai link used for
-			 */
-			//suffix-name = "alsaPORT-tdm";
-			cpu {
-				sound-dai = <&aml_tdmc>;
-				dai-tdm-slot-tx-mask = <1 1>;
-				dai-tdm-slot-rx-mask = <1 1>;
-				dai-tdm-slot-num = <2>;
-				dai-tdm-slot-width = <32>;
-				system-clock-frequency = <12288000>;
-			};
-			codec {
-				sound-dai = <&tlv320adc3101_32 &dummy_codec>;
-			};
-		};
-
 		/* Spotify Audio Start */
 		aml-audio-card,dai-link@3 {
 			mclk-fs = <64>;
@@ -1148,45 +1087,6 @@
 		pinctrl-0 = <&tdmout_a &tdmin_a>;
 	};
 
-	aml_tdmb: tdmb {
-		compatible = "amlogic, g12a-snd-tdmb";
-		#sound-dai-cells = <0>;
-		dai-tdm-lane-slot-mask-in = <0 1 0 0>;
-		dai-tdm-lane-slot-mask-out = <1 0 0 0>;
-		dai-tdm-clk-sel = <1>;
-		clocks = <&clkaudio CLKID_AUDIO_MCLK_B
-				&clkc CLKID_MPLL1
-				&clkc CLKID_MPLL0
-				&clkaudio CLKID_AUDIO_SPDIFOUT_CTRL>;
-		clock-names = "mclk", "clk_srcpll",
-			"samesource_srcpll", "samesource_clk";
-		pinctrl-names = "tdm_pins";
-		pinctrl-0 = <&tdmb_mclk &tdmout_b &tdmin_b>;
-		/*
-		 * 0: tdmout_a;
-		 * 1: tdmout_b;
-		 * 2: tdmout_c;
-		 * 3: spdifout;
-		 * 4: spdifout_b;
-		 */
-		samesource_sel = <3>;
-	};
-
-	aml_tdmc: tdmc {
-		compatible = "amlogic, g12a-snd-tdmc";
-		#sound-dai-cells = <0>;
-		dai-tdm-lane-slot-mask-in = <1 0 0 0>;
-		#dai-tdm-lane-slot-mask-out = <1 0 1 1>;
-		#dai-tdm-lane-oe-slot-mask-in = <0 0 0 0>;
-		#dai-tdm-lane-oe-slot-mask-out = <1 0 0 0>;
-		dai-tdm-clk-sel = <2>;
-		clocks = <&clkaudio CLKID_AUDIO_MCLK_C
-				&clkc CLKID_MPLL2>;
-		clock-names = "mclk", "clk_srcpll";
-		pinctrl-names = "tdm_pins";
-		pinctrl-0 = <&tdmc_mclk &tdmout_c &tdmin_c>;
-	};
-
 	/* copy a useless tdm to output for hdmi, no pinmux */
 	aml_i2s2hdmi: i2s2hdmi {
 		compatible = "amlogic, g12a-snd-tdmc";
@@ -1348,60 +1248,6 @@
 	};
 
 	/* Spotify edit */
-	tdmb_mclk: tdmb_mclk {
-		mux { /* GPIOA_0 re-mapped to button */
-			groups = "GPIOA_0";
-			function = "gpio_periphs";
-			drive-strength = <2>;
-		};
-	};
-	/* Spotify edit (MAYBE THESE GROUPS SHOULD BE GPIOA_1 etc.) */
-	/* See pinctrl-meson-g12a.c in amlogic drivers */
-	tdmout_b: tdmout_b {
-		mux { /* GPIOA_1, GPIOA_2, GPIOA_3 re-mapped to button */
-			groups = "GPIOA_1",
-				"GPIOA_2",
-				"GPIOA_3";
-			function = "gpio_periphs";
-			drive-strength = <2>;
-		};
-	};
-
-	/* Spotify edit */
-	tdmin_b:tdmin_b {
-		mux { /* GPIOA_4 re-mapped to button*/
-			groups = "GPIOA_4"
-				/*,"tdmb_slv_sclk", "tdmb_slv_fs"*/;
-			function = "gpio_periphs";
-			drive-strength = <2>;
-		};
-	};
-
-	tdmc_mclk: tdmc_mclk {
-		mux { /* GPIOA_11 */
-			groups = "mclk1_a";
-			function = "mclk1";
-		};
-	};
-
-	tdmout_c:tdmout_c {
-		mux { /* GPIOA_12, GPIOA_13, GPIOA_8, GPIOA_7*/
-			groups = "tdmc_sclk_a",
-				"tdmc_fs_a",
-				"tdmc_dout0_a"
-				/*,	"tdmc_dout2",
-				 * "tdmc_dout3"
-				 */;
-			function = "tdmc_out";
-		};
-	};
-
-	tdmin_c:tdmin_c {
-		mux { /* GPIOA_10 */
-			groups = "tdmc_din0_a";
-			function = "tdmc_in";
-		};
-	};
 
 	/* GPIOH_5 */
 
@@ -1422,7 +1268,13 @@
 	/* Spotify edit */
 	spotify_buttons: spbuttons {
 		mux { /* GPIOA_5 GPIOA_6 */
-			groups = "GPIOA_5", "GPIOA_6";
+			groups = "GPIOA_0",
+				"GPIOA_1",
+				"GPIOA_2",
+				"GPIOA_3",
+				"GPIOA_4",
+				"GPIOA_5",
+				"GPIOA_6";
 			function = "gpio_periphs";
 		};
 	};
