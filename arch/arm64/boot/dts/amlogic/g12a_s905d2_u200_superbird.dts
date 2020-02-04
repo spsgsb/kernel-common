@@ -134,22 +134,7 @@
 			alignment = <0x0 0x100000>;
 			//no-map;
 		};
-		/*  vdin0 CMA pool */
-		vdin0_cma_reserved:linux,vdin0_cma {
-			compatible = "shared-dma-pool";
-			reusable;
-		/* 1920x1080x2x4  =16+4 M */
-			size = <0x0 0x04000000>;
-			alignment = <0x0 0x400000>;
-		};
-		/*  vdin1 CMA pool */
-		vdin1_cma_reserved:linux,vdin1_cma {
-			compatible = "shared-dma-pool";
-			reusable;
-			/* 1920x1080x2x4  =16 M */
-			size = <0x0 0x04000000>;
-			alignment = <0x0 0x400000>;
-		};
+
 		vm0_cma_reserved:linux,vm0_cma {
 			compatible = "shared-dma-pool";
 			reusable;
@@ -171,7 +156,8 @@
 
 	/* Spotify modifications start */
 	gpio-keys {
-		compatible = "gpio-keys";
+		compatible = "gpio-keys-polled";
+		poll-interval = <40>;
 		status = "okay";
 
 		preset1 {
@@ -632,33 +618,6 @@
 		/*for audio effect ,eqdrc */
 		aml-audio-card,effect = <&audio_effect>;
 
-		aml-audio-card,dai-link@0 {
-			format = "dsp_a";
-			mclk-fs = <512>;
-			//continuous-clock;
-			//bitclock-inversion;
-			//frame-inversion;
-			//bitclock-master = <&tdmacodec>;
-			//frame-master = <&tdmacodec>;
-			/* suffix-name, sync with android audio hal
-			 * what's the dai link used for
-			 */
-			suffix-name = "alsaPORT-pcm";
-			tdmacpu: cpu {
-				sound-dai = <&aml_tdma>;
-				dai-tdm-slot-tx-mask =
-							<1 1 1 1 1 1 1 1>;
-				dai-tdm-slot-rx-mask =
-							<1 1 1 1 1 1 1 1>;
-				dai-tdm-slot-num = <8>;
-				dai-tdm-slot-width = <32>;
-				system-clock-frequency = <24576000>;
-			};
-			tdmacodec: codec {
-				sound-dai = <&dummy_codec &dummy_codec>;
-			};
-		};
-
 		/* Spotify Audio Start */
 		aml-audio-card,dai-link@3 {
 			mclk-fs = <64>;
@@ -684,65 +643,6 @@
 			};
 		};
 		/* Spotify Audio End */
-
-		aml-audio-card,dai-link@4 {
-			status = "disabled";
-			mclk-fs = <128>;
-			continuous-clock;
-			/* suffix-name, sync with android audio hal
-			 * what's the dai link used for
-			 */
-			suffix-name = "alsaPORT-spdifb2hdmi";
-			cpu {
-				sound-dai = <&aml_spdif>;
-				system-clock-frequency = <6144000>;
-			};
-			codec {
-				sound-dai = <&dummy_codec>;
-			};
-		};
-		/* spdif_b to hdmi, only playback */
-		aml-audio-card,dai-link@5 {
-			mclk-fs = <128>;
-			continuous-clock;
-			/* suffix-name, sync with android audio hal
-			 * what's the dai link used for
-			 */
-			suffix-name = "alsaPORT-spdif";
-			cpu {
-				sound-dai = <&aml_spdif_b>;
-				system-clock-frequency = <6144000>;
-			};
-			codec {
-				sound-dai = <&dummy_codec>;
-			};
-		};
-		/*
-		 * dai link for i2s to hdmix,
-		 * Notice to select a tdm lane not used by hw
-		 */
-		/*
-		 * aml-audio-card,dai-link@6 {
-		 * format = "i2s";
-		 * mclk-fs = <256>;
-		 * //continuous-clock;
-		 * //bitclock-inversion;
-		 * //frame-inversion;
-		 * bitclock-master = <&aml_i2s2hdmi>;
-		 * frame-master = <&aml_i2s2hdmi>;
-		 * suffix-name = "alsaPORT-i2s2hdmi";
-		 * cpu {
-		 * sound-dai = <&aml_i2s2hdmi>;
-		 * dai-tdm-slot-tx-mask = <1 1>;
-		 * dai-tdm-slot-num = <2>;
-		 * dai-tdm-slot-width = <32>;
-		 * system-clock-frequency = <12288000>;
-		 * };
-		 * codec {
-		 * sound-dai = <&dummy_codec>;
-		 * };
-		 * };
-		 */
 	};
 	audiolocker: locker {
 		compatible = "amlogic, audiolocker";
@@ -1268,23 +1168,23 @@
 	/* Spotify edit */
 	spotify_buttons: spbuttons {
 		mux { /* GPIOA_5 GPIOA_6 */
-			groups = "GPIOA_0",
+			pins = "GPIOA_0",
 				"GPIOA_1",
 				"GPIOA_2",
 				"GPIOA_3",
 				"GPIOA_4",
 				"GPIOA_5",
 				"GPIOA_6";
-			function = "gpio_periphs";
+			bias-disable;
 		};
 	};
 	/* Spotify edit */
 	spotify_rotary: sprotary {
 		mux {
-			groups = "GPIOZ_7",
+			pins = "GPIOZ_7",
 				"GPIOZ_8",
 				"GPIOZ_9";
-			function = "gpio_periphs";
+			bias-disable;
 		};
 	};
 
@@ -1302,7 +1202,7 @@
 			function = "gpio_periphs";
 		};
 	};
-	
+
 	spotify_lcd_vdd_pin: spotify_lcd_vdd_pin {
 		mux {
 			pins = "GPIOZ_6";
@@ -1357,7 +1257,7 @@
 
 	/* Spotify edit */
 	pdmin: pdmin {
-		mux { /* gpioa_7, gpioa_8, gpioa_9*/
+		mux {
 			groups = "pdm_din0_a",
 			"pdm_din1_a",
 			"pdm_dclk_a";
@@ -1459,45 +1359,9 @@
 	controller-type = <3>;
 };
 
-/* disabled for spotify */
-&ethmac {
-	status = "disabled";
-	pinctrl-names = "internal_eth_pins";
-	pinctrl-0 = <&internal_eth_pins>;
-	mc_val = <0x4be04>;
-
-	internal_phy=<1>;
-};
-
 &uart_A {
 	status = "okay";
 };
-
-/*if you want to use vdin just modify status to "ok"*/
-&vdin0 {
-	memory-region = <&vdin0_cma_reserved>;
-	status = "okay";
-	/*vdin write mem color depth support:
-	 *bit0:support 8bit
-	 *bit1:support 9bit
-	 *bit2:support 10bit
-	 *bit3:support 12bit
-	 *bit4:support yuv422 10bit full pack mode (from txl new add)
-	 */
-	tv_bit_mode = <0x15>;
-};
-&vdin1 {
-	memory-region = <&vdin1_cma_reserved>;
-	status = "okay";
-	/*vdin write mem color depth support:
-	 *bit0:support 8bit
-	 *bit1:support 9bit
-	 *bit2:support 10bit
-	 *bit3:support 12bit
-	 */
-	tv_bit_mode = <1>;
-};
-
 
 &sd_emmc_c {
 	status = "okay";
@@ -1574,73 +1438,6 @@
 	};
 };
 
-&nand {
-	status = "disabled";
-	plat-names = "bootloader","nandnormal";
-	plat-num = <2>;
-	plat-part-0 = <&bootloader>;
-	plat-part-1 = <&nandnormal>;
-	bootloader: bootloader{
-		enable_pad ="ce0";
-		busy_pad = "rb0";
-		timming_mode = "mode5";
-		bch_mode = "bch8_1k";
-		t_rea = <20>;
-		t_rhoh = <15>;
-		chip_num = <1>;
-		part_num = <0>;
-		rb_detect = <1>;
-	};
-	nandnormal: nandnormal{
-		enable_pad ="ce0";
-		busy_pad = "rb0";
-		timming_mode = "mode5";
-		bch_mode = "bch8_1k";
-		plane_mode = "twoplane";
-		t_rea = <20>;
-		t_rhoh = <15>;
-		chip_num = <2>;
-		part_num = <3>;
-		partition = <&nand_partitions>;
-		rb_detect = <1>;
-	};
-	nand_partitions:nand_partition{
-		/*
-		 * if bl_mode is 1, tpl size was generate by
-		 * fip_copies * fip_size which
-		 * will not skip bad when calculating
-		 * the partition size;
-		 *
-		 * if bl_mode is 0,
-		 * tpl partition must be comment out.
-		 */
-		tpl{
-			offset=<0x0 0x0>;
-			size=<0x0 0x0>;
-		};
-		logo{
-			offset=<0x0 0x0>;
-			size=<0x0 0x200000>;
-		};
-		recovery{
-			offset=<0x0 0x0>;
-			size=<0x0 0x1000000>;
-		};
-		boot{
-			offset=<0x0 0x0>;
-			size=<0x0 0x1000000>;
-		};
-		system{
-			offset=<0x0 0x0>;
-			size=<0x0 0x4000000>;
-		};
-		data{
-			offset=<0xffffffff 0xffffffff>;
-			size=<0x0 0x0>;
-		};
-	};
-};
-
 &pcie_A {
 	reset-gpio = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
 	status = "disable";
@@ -1668,8 +1465,4 @@
 
 &defendkey {
 	status = "okay";
-};
-
-&amhdmitx {
-	status = "disabled";
 };

@@ -23,6 +23,7 @@ amlogic	Amlogic, Inc.
 ampire	Ampire Co., Ltd.
 ams	AMS AG
 amstaos	AMS-Taos Inc.
+amlogic,meson-gpio-intc-ext
 analogix	Analogix Semiconductor, Inc.
 android
 android,odm
