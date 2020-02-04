@@ -160,6 +160,9 @@
 		poll-interval = <40>;
 		status = "okay";
 
+		pinctrl-names="default";
+		pinctrl-0=<&spotify_buttons>;
+
 		preset1 {
 			label = "GPIO Key preset1";
 			linux,code = <0x101>;
@@ -213,6 +216,10 @@
 			compatible = "rotary-encoder";
 			gpios = <&gpio GPIOZ_8 GPIO_ACTIVE_LOW>,
 				<&gpio GPIOZ_9 GPIO_ACTIVE_LOW>;
+
+			pinctrl-names="default";
+			pinctrl-0=<&spotify_rotary>;
+
 			linux,axis = <0>; /* REL_X */
 			rotary-encoder,encoding = "gray";
 			rotary-encoder,relative-axis;
@@ -899,7 +906,7 @@
 &i2c0 {
 	status = "okay";
 	pinctrl-names="default";
-	pinctrl-0=<&spotify_touch_i2c>;
+	pinctrl-0=<&spotify_touch_i2c &spotify_touch_gpio>;
 	clock-frequency = <400000>;
 
 	gt9xx@5d {
@@ -1166,7 +1173,7 @@
 	 *};
 	 */
 	/* Spotify edit */
-	spotify_buttons: spbuttons {
+	spotify_buttons: spotify_buttons {
 		mux { /* GPIOA_5 GPIOA_6 */
 			pins = "GPIOA_0",
 				"GPIOA_1",
@@ -1176,15 +1183,17 @@
 				"GPIOA_5",
 				"GPIOA_6";
 			bias-disable;
+			input-enable;
 		};
 	};
 	/* Spotify edit */
-	spotify_rotary: sprotary {
+	spotify_rotary: spotify_rotary {
 		mux {
 			pins = "GPIOZ_7",
 				"GPIOZ_8",
 				"GPIOZ_9";
 			bias-disable;
+			input-enable;
 		};
 	};
 
@@ -1207,6 +1216,7 @@
 		mux {
 			pins = "GPIOZ_6";
 			bias-pull-up;
+			output-high;
 		};
 	};
 
@@ -1220,6 +1230,7 @@
 				"GPIOC_6",
 				"GPIOC_7";
 			bias-pull-down;
+			output-low;
 		};
 	};
 
@@ -1232,6 +1243,7 @@
 				"GPIOA_14",
 				"GPIOA_15";
 			bias-pull-down;
+			output-low;
 		};
 	};
 
@@ -1245,6 +1257,7 @@
 				"GPIOH_7",
 				"GPIOH_8";
 			bias-pull-down;
+			output-low;
 		};
 	};
 
@@ -1270,6 +1283,7 @@
 		mux {
 			pins = "GPIOH_4";
 			function = "gpio_periphs";
+			bias-pull-up;
 			output-high;
 		};
 	};
@@ -1278,6 +1292,7 @@
 		mux {
 			pins = "GPIOH_5";
 			function = "gpio_periphs";
+			bias-pull-up;
 			output-high;
 		};
 	};
