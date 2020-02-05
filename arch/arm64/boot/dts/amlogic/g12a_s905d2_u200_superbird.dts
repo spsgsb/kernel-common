@@ -226,6 +226,23 @@
 			wakeup-source = <0>;
 	};
 
+	beeper {
+		compatible = "pwm-beeper";
+		pwms = <&pwm_cd>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&spotify_buzzer>;
+
+		status = "okay";
+	};
+
+	disabled-pins {
+		pinctrl-names = "default";
+		pinctrl-0 = <&spotify_disabled_pins_a
+			&spotify_disabled_pins_c
+			&spotify_disabled_pins_h>;
+		status = "okay";
+	};
+
 	/* Spotify modifications end */
 
 	cvbsout {
@@ -906,13 +923,14 @@
 &i2c0 {
 	status = "okay";
 	pinctrl-names="default";
-	pinctrl-0=<&spotify_touch_i2c &spotify_touch_gpio>;
+	pinctrl-0=<&spotify_touch_i2c>;
 	clock-frequency = <400000>;
 
 	gt9xx@5d {
 		compatible = "goodix,gt9xx";
 		status = "okay";
 		reg = <0x5d>;
+
 		interrupt-parent = <&gpio_intc>;
 		interrupts = <64 IRQ_TYPE_EDGE_FALLING>;
 		reset-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_LOW>;
@@ -1059,6 +1077,7 @@
 		filter_mode = <1>; /* mode 0~4, defalut:1 */
 		status = "okay";
 	};
+
 	aml_loopback: loopback {
 		compatible = "amlogic, snd-loopback";
 		/*
@@ -1086,7 +1105,7 @@
 		 * 4: PAD_tdminB
 		 * 5: PAD_tdminC
 		 */
-		datalb_src = <2>;
+		datalb_src = <0>;
 		datalb_chnum = <8>;
 		datalb_chmask = <0x3>;
 
