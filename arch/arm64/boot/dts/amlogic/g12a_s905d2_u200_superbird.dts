@@ -909,6 +909,7 @@
 &meson_fb {
 	status = "okay";
 	display_size_default = <480 800 480 1600 24>;
+	display_mode_default = "panel";
 	mem_size = <0x00800000 0x1980000 0x100000 0x100000 0x800000>;
 	logo_addr = "0x7f800000";
 	mem_alloc = <0>;
@@ -1231,11 +1232,11 @@
 		};
 	};
 
-	spotify_lcd_vdd_pin: spotify_lcd_vdd_pin {
+	spotify_lcd_reset_pin: spotify_lcd_reset_pin {
 		mux {
-			pins = "GPIOZ_6";
-			bias-pull-up;
-			output-high;
+			pins = "GPIOZ_5";
+			function = "gpio_periphs";
+			bias-disable;
 		};
 	};
 
@@ -1500,3 +1501,10 @@
 &defendkey {
 	status = "okay";
 };
+
+/*
+ *&lcd {
+ *	pinctrl-names = "default";
+ *	pinctrl-0 = <&spotify_lcd_reset_pin>;
+ *};
+ */
