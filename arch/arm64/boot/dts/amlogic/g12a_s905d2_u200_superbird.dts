@@ -951,51 +951,14 @@
 };
 
 &i2c2 {
-	status = "disabled";
-	pinctrl-names="default";
-	pinctrl-0=<&i2c2_master_pins2>;
-	clock-frequency = <100000>;
-};
-
-&i2c3 {
 	status = "okay";
 	pinctrl-names="default";
-	pinctrl-0=<&i2c3_master_pins2>;
-	clock-frequency = <100000>; /* default 100k */
+	pinctrl-0=<&i2c2_master_pins2 &spotify_prox_gpio>;
+	clock-frequency= <400000>;
 
-	/* No 2x25 amp here anymore
-	 *ad82584f_62: ad82584f_62@62 {
-	 *	compatible = "ESMT, ad82584f";
-	 *	#sound-dai-cells = <0>;
-	 *	reg = <0x31>;
-	 *	status = "okay";
-	 *	reset_pin = <&gpio GPIOA_5 0>;
-	 *};
-	 */
-
-	tlv320adc3101_32: tlv320adc3101_32@32 {
-		compatible = "ti,tlv320adc3101";
-		#sound-dai-cells = <0>;
-		reg = <0x19>;
-		differential_pair = <1>;
-		status = "okay";
-	};
-
-	/* removed
-	 *tas5707_36: tas5707_36@36 {
-	 *	compatible = "ti,tas5707";
-	 *	#sound-dai-cells = <0>;
-	 *	reg = <0x1b>;
-	 *	status = "disabled";
-	 *	reset_pin = <&gpio GPIOA_5 0>;
-	 *};
-	 */
-
-	bl_extern_i2c {
-		compatible = "bl_extern, i2c";
-		dev_name = "lp8556";
-		reg = <0x2c>;
-		status = "disabled";
+	vl6180@29 {
+		compatible = "st,vl6180";
+		reg = <0x29>;
 	};
 };
 
@@ -1229,6 +1192,17 @@
 		mux {
 			groups = "GPIOZ_3", "GPIOZ_4";
 			function = "gpio_periphs";
+		};
+	};
+
+	spotify_prox_gpio: spotify_prox_gpio {
+		mux {
+			pins = "GPIOZ_10";
+			bias-pull-down;
+		};
+		mux1 {
+			pins = "GPIOZ_11";
+			bias-pull-up;
 		};
 	};
 
