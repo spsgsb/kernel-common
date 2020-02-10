@@ -14864,3 +14864,4 @@ F:  drivers/amlogic/media/vout/lcd/lcd_extern/mipi_ILI9806E.c
 SPOTIFY SUPERBIRD DEFCONFIGS
 M:  Naima Claesson <naimac@spotify.com>
 F:  arch/arm64/configs/superbird_flex_ep0_defconfig
+F:  arch/arm64/boot/dts/amlogic/mesong_ep0.dtsi
