@@ -17,7 +17,7 @@
 
 /dts-v1/;
 
-#include "mesong12a.dtsi"
+#include "mesong_ep0.dtsi"
 #include "partition_mbox_superbird.dtsi"
 #include "mesong12a_skt-panel.dtsi"
 
