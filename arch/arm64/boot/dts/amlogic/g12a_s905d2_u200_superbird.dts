@@ -17,7 +17,7 @@
 
 /dts-v1/;
 
-#include "mesong_ep0.dtsi"
+#include "mesong12a.dtsi"
 #include "partition_mbox_superbird.dtsi"
 #include "mesong12a_skt-panel.dtsi"
 
@@ -1488,9 +1488,23 @@
 	status = "okay";
 };
 
-/*
- *&lcd {
- *	pinctrl-names = "default";
- *	pinctrl-0 = <&spotify_lcd_reset_pin>;
- *};
- */
+&gpio_intc {
+	 compatible = "amlogic,meson-gpio-intc-ext",
+					"amlogic,meson-g12a-gpio-intc";
+};
+
+&remote {
+	status = "disabled";
+};
+
+&custom_maps {
+	status = "disabled";
+};
+
+&amhdmitx {
+	status = "disabled";
+};
+
+&aocec {
+	status = "disabled";
+};
