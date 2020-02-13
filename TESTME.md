@@ -85,5 +85,5 @@ export QT_QUICK_BACKEND=""
 export QT_QPA_EGLFS_PHYSICAL_WIDTH=51
 export QT_QPA_EGLFS_PHYSICAL_HEIGHT=86
 
-./qt-superbirdapp
+qt-superbird-app
 ```
