@@ -945,7 +945,7 @@
 &i2c2 {
 	status = "okay";
 	pinctrl-names="default";
-	pinctrl-0=<&i2c2_master_pins2>;
+	pinctrl-0=<&i2c2_master_pins2 &spotify_prox_gpio &spotify_imu_gpio>;
 	clock-frequency= <400000>;
 
 	vl6180@29 {
@@ -953,9 +953,9 @@
 		reg = <0x29>;
 	};
 
-	lsm6dsl@b6 {
+	lsm6dsl@6b {
 		compatible = "st,lsm6dsl";
-		reg = <0xb6>;
+		reg = <0x6b>;
 	};
 };
 
@@ -1200,6 +1200,13 @@
 		mux1 {
 			pins = "GPIOZ_11";
 			bias-pull-up;
+		};
+	};
+
+	spotify_imu_gpio: spotify_imu_gpio {
+		mux {
+			pins = "GPIOZ_12", "GPIOZ_13";
+			bias-pull-down;
 		};
 	};
 
