@@ -286,14 +286,6 @@
 			0xffff  0x0>; /* ending flag */
 	};
 
-	bt-dev{
-		compatible = "amlogic, bt-dev";
-		dev_name = "bt-dev";
-		status = "okay";
-		gpio_reset = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
-		gpio_hostwake = <&gpio GPIOX_19 GPIO_ACTIVE_HIGH>;
-	};
-
 	wifi{
 		compatible = "amlogic, aml_wifi";
 		dev_name = "aml_wifi";
@@ -961,9 +953,9 @@
 		reg = <0x29>;
 	};
 
-	lsm6dsl@6b {
+	lsm6dsl@b6 {
 		compatible = "st,lsm6dsl";
-		reg = <0x6b>;
+		reg = <0xb6>;
 	};
 };
 
@@ -1382,6 +1374,14 @@
 
 &uart_A {
 	status = "okay";
+
+	bluetooth {
+			compatible = "brcm,bcm4345c0";
+			max-speed = <921600>;
+			shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
+			device-wakeup-gpios = <&gpio GPIOX_19 GPIO_ACTIVE_HIGH>;
+			host-wakeup-gpios = <&gpio GPIOX_18 GPIO_ACTIVE_HIGH>;
+	};
 };
 
 &sd_emmc_c {
