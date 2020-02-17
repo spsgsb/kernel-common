@@ -35,6 +35,10 @@ hciconfig hci0 up
 ```
 arecord -D sysdefault:CARD=0 --format=S16_LE --duration=5 --rate=16000 --file-type=wav out.wav
 ```
+...or to record from all 4 microphones:
+```
+arecord --device="sysdefault:CARD=AMLAUGESOUND" --channels=4 --format=S16_LE --rate=48000 --vumeter=mono --file-type=wav test.wav
+```
 ### Download recording
 ```
 adb pull out.wav .
