@@ -1377,7 +1377,7 @@
 
 	bluetooth {
 			compatible = "brcm,bcm4345c0";
-			max-speed = <921600>;
+			max-speed = <3000000>;
 			shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
 			device-wakeup-gpios = <&gpio GPIOX_19 GPIO_ACTIVE_HIGH>;
 			host-wakeup-gpios = <&gpio GPIOX_18 GPIO_ACTIVE_HIGH>;
