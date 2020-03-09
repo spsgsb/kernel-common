@@ -195,13 +195,13 @@
 
 		back {
 			label = "GPIO Key back";
-			linux,code = <4>;
+			linux,code = <1>;
 			gpios = <&gpio GPIOA_5 GPIO_ACTIVE_LOW>;
 		};
 
 		home {
 			label = "GPIO Key home";
-			linux,code = <3>;
+			linux,code = <6>;
 			gpios = <&gpio GPIOA_6 GPIO_ACTIVE_LOW>;
 		};
 
