@@ -165,25 +165,25 @@
 
 		preset1 {
 			label = "GPIO Key preset1";
-			linux,code = <0x101>;
+			linux,code = <2>;
 			gpios = <&gpio GPIOA_0 GPIO_ACTIVE_LOW>;
 		};
 
 		preset2 {
 			label = "GPIO Key preset2";
-			linux,code = <0x102>;
+			linux,code = <3>;
 			gpios = <&gpio GPIOA_1 GPIO_ACTIVE_LOW>;
 		};
 
 		preset3 {
 			label = "GPIO Key preset3";
-			linux,code = <0x103>;
+			linux,code = <4>;
 			gpios = <&gpio GPIOA_2 GPIO_ACTIVE_LOW>;
 		};
 
 		preset4 {
 			label = "GPIO Key preset4";
-			linux,code = <0x104>;
+			linux,code = <5>;
 			gpios = <&gpio GPIOA_3 GPIO_ACTIVE_LOW>;
 		};
 
