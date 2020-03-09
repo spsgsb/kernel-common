@@ -189,7 +189,7 @@
 
 		mute {
 			label = "GPIO Key mute";
-			linux,code = <113>;
+			linux,code = <50>;
 			gpios = <&gpio GPIOA_4 GPIO_ACTIVE_LOW>;
 		};
 
