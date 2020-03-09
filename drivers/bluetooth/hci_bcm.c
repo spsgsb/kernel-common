@@ -87,7 +87,7 @@ static int bcm_set_baudrate(struct hci_uart *hu, unsigned int speed)
 
 	if (speed > 3000000) {
 		struct bcm_write_uart_clock_setting clock;
-
+		// Modified for S905D2 board
 		clock.type = BCM_UART_CLOCK_24MHZ;
 
 		bt_dev_dbg(hdev, "Set Controller clock (%d)", clock.type);
@@ -842,6 +842,7 @@ static const struct hci_uart_proto bcm_proto = {
 	.name		= "Broadcom",
 	.manufacturer	= 15,
 	.init_speed	= 115200,
+	// Modified for AmPak chipset.
 	.oper_speed	= 3000000,
 	.open		= bcm_open,
 	.close		= bcm_close,
