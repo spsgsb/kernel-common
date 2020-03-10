@@ -220,7 +220,7 @@
 			pinctrl-names="default";
 			pinctrl-0=<&spotify_rotary>;
 
-			linux,axis = <0>; /* REL_X */
+			linux,axis = <6>; /* REL_HWHEEL */
 			rotary-encoder,encoding = "gray";
 			rotary-encoder,relative-axis;
 			wakeup-source = <0>;
