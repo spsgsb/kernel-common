@@ -822,7 +822,7 @@
 &i2c2 {
 	status = "okay";
 	pinctrl-names="default";
-	pinctrl-0=<&i2c2_master_pins2>
+	pinctrl-0=<&i2c2_master_pins2>;
 	clock-frequency= <400000>;
 
 	vl6180@29 {
