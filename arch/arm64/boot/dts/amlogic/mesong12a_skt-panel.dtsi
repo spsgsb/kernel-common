@@ -1646,7 +1646,7 @@
 		backlight_0{
 			index = <0>;
 			bl_name = "backlight_pwm";
-			bl_level_default_uboot_kernel = <100 100>;
+			bl_level_default_uboot_kernel = <0 0>;
 			bl_level_attr = <255 10 /*max, min*/
 				128 128>; /*mid, mid_mapping*/
 			bl_ctrl_method = <1>; /* 1=pwm, 2=pwm_combo, 4=extern */
@@ -1664,7 +1664,7 @@
 		backlight_1{
 			index = <1>;
 			bl_name = "bl_extern";
-			bl_level_default_uboot_kernel = <100 100>;
+			bl_level_default_uboot_kernel = <0 0>;
 			bl_level_attr = <255 10 /*max, min*/
 				128 128>; /*mid, mid_mapping*/
 			bl_ctrl_method = <4>; /*1=pwm, 2=pwm_combo, 4=extern*/
