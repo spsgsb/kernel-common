@@ -223,6 +223,7 @@
 			linux,axis = <6>; /* REL_HWHEEL */
 			rotary-encoder,encoding = "gray";
 			rotary-encoder,relative-axis;
+			rotary-encoder,steps-per-period = <2>;
 			wakeup-source = <0>;
 	};
 
