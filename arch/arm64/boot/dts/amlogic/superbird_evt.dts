@@ -187,22 +187,10 @@
 			gpios = <&gpio GPIOA_3 GPIO_ACTIVE_LOW>;
 		};
 
-		mute {
-			label = "GPIO Key mute";
-			linux,code = <50>;
-			gpios = <&gpio GPIOA_4 GPIO_ACTIVE_LOW>;
-		};
-
 		back {
 			label = "GPIO Key back";
 			linux,code = <1>;
 			gpios = <&gpio GPIOA_5 GPIO_ACTIVE_LOW>;
-		};
-
-		home {
-			label = "GPIO Key home";
-			linux,code = <6>;
-			gpios = <&gpio GPIOA_6 GPIO_ACTIVE_LOW>;
 		};
 
 		select {
@@ -225,15 +213,6 @@
 			rotary-encoder,relative-axis;
 			rotary-encoder,steps-per-period = <2>;
 			wakeup-source = <0>;
-	};
-
-	beeper {
-		compatible = "pwm-beeper";
-		pwms = <&pwm_cd>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&spotify_buzzer>;
-
-		status = "okay";
 	};
 
 	disabled-pins {
@@ -285,32 +264,6 @@
 			0x1b05  0x9
 			0x1c59  0xf850
 			0xffff  0x0>; /* ending flag */
-	};
-
-	wifi{
-		compatible = "amlogic, aml_wifi";
-		dev_name = "aml_wifi";
-		status = "okay";
-		interrupt_pin = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
-		irq_trigger_type = "GPIO_IRQ_LOW";
-		power_on_pin = <&gpio GPIOX_6 GPIO_ACTIVE_HIGH>;
-		dhd_static_buf;	//if use bcm wifi, config dhd_static_buf
-		pinctrl-names = "default";
-		pinctrl-0 = <&pwm_e_pins>;
-		pwm_config = <&wifi_pwm_conf>;
-	};
-
-	wifi_pwm_conf:wifi_pwm_conf{
-		pwm_channel1_conf {
-			pwms = <&pwm_ef MESON_PWM_0 30541 0>;
-			duty-cycle = <15270>;
-			times = <10>;
-		};
-		pwm_channel2_conf {
-			pwms = <&pwm_ef MESON_PWM_2 30500 0>;
-			duty-cycle = <15250>;
-			times = <12>;
-		};
 	};
 
 	codec_mm {
@@ -949,14 +902,23 @@
 	pinctrl-0=<&i2c2_master_pins2 &spotify_prox_gpio &spotify_imu_gpio>;
 	clock-frequency= <400000>;
 
-	vl6180@29 {
-		compatible = "st,vl6180";
-		reg = <0x29>;
+	imu@18 {
+		reg = <0x18>;
 	};
 
-	lsm6dsl@6b {
-		compatible = "st,lsm6dsl";
-		reg = <0x6b>;
+	als@39 {
+		reg = <0x39>;
+	};
+};
+
+&i2c3 {
+	status = "okay";
+	pinctrl-names="default";
+	pinctrl-0=<&spotify_mfi_i2c_pins>;
+	clock-frequency= <400000>;
+
+	mfi@10 {
+		reg = <0x10>;		
 	};
 };
 
@@ -1219,6 +1181,21 @@
 		};
 	};
 
+	spotify_mfi_i2c_pins: spotify_mfi_i2c_pins {
+		mux {
+			groups = "i2c3_sda_a",
+			"i2c3_sck_a";
+			function = "i2c3";
+		};
+	};
+
+	spotify_bluetooth_wake_pins: spotify_bluetooth_wake_pins {
+		pins = "GPIOX_6",
+			"GPIOX_7";
+		bias-disable;
+		input-enable;
+	};
+
 	spotify_disabled_pins_c: spotify_disabled_pins_c {
 		mux {
 			pins = "GPIOC_0",
@@ -1238,9 +1215,7 @@
 			pins = "GPIOA_10",
 				"GPIOA_11",
 				"GPIOA_12",
-				"GPIOA_13",
-				"GPIOA_14",
-				"GPIOA_15";
+				"GPIOA_13";
 			bias-pull-down;
 			output-low;
 		};
@@ -1257,13 +1232,6 @@
 				"GPIOH_8";
 			bias-pull-down;
 			output-low;
-		};
-	};
-
-	spotify_buzzer: spotify_buzzer {
-		mux {
-			groups = "pwm_c_c4";
-			function = "pwm_c";
 		};
 	};
 
@@ -1379,9 +1347,8 @@
 	bluetooth {
 			compatible = "brcm,bcm4345c0";
 			max-speed = <3000000>;
-			shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
-			device-wakeup-gpios = <&gpio GPIOX_19 GPIO_ACTIVE_HIGH>;
-			host-wakeup-gpios = <&gpio GPIOX_18 GPIO_ACTIVE_HIGH>;
+			device-wakeup-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_HIGH>;
+			host-wakeup-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
 	};
 };
 
