@@ -41,9 +41,17 @@
 #define VL6180_OUT_OF_RESET 0x016
 #define VL6180_HOLD 0x017
 #define VL6180_RANGE_START 0x018
+#define VL6180_RANGE_CHECK_ENABLES 0x02d
+#define VL6180_RANGE_IGNORE_VALID_HEIGHT 0x025
+#define VL6180_RANGE_IGNORE_THRESHOLD 0x026
 #define VL6180_ALS_START 0x038
 #define VL6180_ALS_GAIN 0x03f
 #define VL6180_ALS_IT 0x040
+
+/* Range check enable configuration */
+#define VL6180_ALS_EARLY_CONVERGENCE_ENABLE (1 << 0)
+#define VL6180_RANGE_IGNORE_ENABLE (1 << 1)
+#define VL6180_SIGNAL_TO_NOISE_ENABLE (1 << 4)
 
 /* Status registers */
 #define VL6180_RANGE_STATUS 0x04d
@@ -128,7 +136,7 @@ static const struct vl6180_chan_regs vl6180_chan_regs_table[] = {
 };
 
 static int vl6180_read(struct i2c_client *client, u16 cmd, void *databuf,
-		       u8 len)
+			   u8 len)
 {
 	__be16 cmdbuf = cpu_to_be16(cmd);
 	struct i2c_msg msgs[2] = {
@@ -205,6 +213,76 @@ static int vl6180_write_word(struct i2c_client *client, u16 cmd, u16 val)
 	}
 
 	return 0;
+}
+
+static ssize_t vl6180_show_register_byte(struct device *dev, u16 cmd,
+		char *buff)
+{
+	int ret;
+
+	struct vl6180_data *data = iio_priv(dev_to_iio_dev(dev));
+	struct i2c_client *client = data->client;
+
+	ret = vl6180_read_byte(client, cmd);
+	if (ret < 0)
+		return ret;
+
+	return sprintf(buff, "%d\n", ret);
+}
+
+static ssize_t vl6180_store_register_byte(struct device *dev, u16 cmd,
+		const char *buff, size_t len)
+{
+	int ret;
+	u8 val;
+
+	struct vl6180_data *data = iio_priv(dev_to_iio_dev(dev));
+	struct i2c_client *client = data->client;
+
+	ret = kstrtou8(buff, 0, &val);
+	if (ret != 0)
+		return ret;
+
+	ret = vl6180_write_byte(client, cmd, val);
+	if (ret < 0)
+		return ret;
+
+	return len;
+}
+
+static ssize_t vl6180_show_register_word(struct device *dev, u16 cmd,
+		char *buff)
+{
+	int ret;
+
+	struct vl6180_data *data = iio_priv(dev_to_iio_dev(dev));
+	struct i2c_client *client = data->client;
+
+	ret = vl6180_read_word(client, cmd);
+	if (ret < 0)
+		return ret;
+
+	return sprintf(buff, "%d\n", ret);
+}
+
+static ssize_t vl6180_store_register_word(struct device *dev, u16 cmd,
+		const char *buff, size_t len)
+{
+	int ret;
+	u16 val;
+
+	struct vl6180_data *data = iio_priv(dev_to_iio_dev(dev));
+	struct i2c_client *client = data->client;
+
+	ret = kstrtou16(buff, 0, &val);
+	if (ret != 0)
+		return ret;
+
+	ret = vl6180_write_word(client, cmd, val);
+	if (ret < 0)
+		return ret;
+
+	return len;
 }
 
 static int vl6180_measure(struct vl6180_data *data, int addr)
@@ -343,8 +421,104 @@ static int vl6180_read_raw(struct iio_dev *indio_dev,
 
 static IIO_CONST_ATTR(als_gain_available, "1 1.25 1.67 2.5 5 10 20 40");
 
+static ssize_t vl6180_show_range_ignore_threshold(struct device *dev,
+		struct device_attribute *attr, char *buff)
+{
+	return vl6180_show_register_word(dev, VL6180_RANGE_IGNORE_THRESHOLD,
+			buff);
+}
+
+static ssize_t vl6180_store_range_ignore_threshold(struct device *dev,
+		struct device_attribute *attr, const char *buff, size_t len)
+{
+	return vl6180_store_register_word(dev, VL6180_RANGE_IGNORE_THRESHOLD,
+			buff, len);
+}
+
+static IIO_DEVICE_ATTR(range_ignore_threshold,
+		0644,
+		vl6180_show_range_ignore_threshold,
+		vl6180_store_range_ignore_threshold,
+		0);
+
+static ssize_t vl6180_show_range_ignore_valid_height(struct device *dev,
+		struct device_attribute *attr, char *buff)
+{
+	return vl6180_show_register_byte(dev, VL6180_RANGE_IGNORE_VALID_HEIGHT,
+			buff);
+}
+
+static ssize_t vl6180_store_range_ignore_valid_height(struct device *dev,
+		struct device_attribute *attr, const char *buff, size_t len)
+{
+	return vl6180_store_register_byte(dev, VL6180_RANGE_IGNORE_VALID_HEIGHT,
+			buff, len);
+}
+
+static IIO_DEVICE_ATTR(range_ignore_valid_height,
+		0644,
+		vl6180_show_range_ignore_valid_height,
+		vl6180_store_range_ignore_valid_height,
+		0);
+
+static ssize_t vl6180_show_range_ignore_enable(struct device *dev,
+		struct device_attribute *attr, char *buff)
+{
+	int ret;
+
+	struct vl6180_data *data = iio_priv(dev_to_iio_dev(dev));
+	struct i2c_client *client = data->client;
+
+	ret = vl6180_read_byte(client, VL6180_RANGE_CHECK_ENABLES);
+	if (ret < 0)
+		return ret;
+
+	return sprintf(buff, "%d\n", !!(ret & VL6180_RANGE_IGNORE_ENABLE));
+}
+
+static ssize_t vl6180_store_range_ignore_enable(struct device *dev,
+		struct device_attribute *attr, const char *buff, size_t len)
+{
+	int ret;
+	bool val;
+
+	struct vl6180_data *data = iio_priv(dev_to_iio_dev(dev));
+	struct i2c_client *client = data->client;
+
+	ret = kstrtobool(buff, &val);
+	if (ret != 0)
+		return ret;
+
+	ret = vl6180_read_byte(client, VL6180_RANGE_CHECK_ENABLES);
+	if (ret < 0)
+		return ret;
+
+	if (val)
+		ret = vl6180_write_byte(client,
+				VL6180_RANGE_CHECK_ENABLES,
+				ret | VL6180_RANGE_IGNORE_ENABLE);
+	else
+		ret = vl6180_write_byte(client,
+				VL6180_RANGE_CHECK_ENABLES,
+				ret & ~VL6180_RANGE_IGNORE_ENABLE);
+
+	if (ret < 0)
+		return ret;
+
+	return len;
+}
+
+static IIO_DEVICE_ATTR(range_ignore_enable,
+		0644,
+		vl6180_show_range_ignore_enable,
+		vl6180_store_range_ignore_enable,
+		0);
+
 static struct attribute *vl6180_attributes[] = {
 	&iio_const_attr_als_gain_available.dev_attr.attr,
+	&iio_dev_attr_range_ignore_enable.dev_attr.attr,
+	&iio_dev_attr_range_ignore_threshold.dev_attr.attr,
+	&iio_dev_attr_range_ignore_valid_height.dev_attr.attr,
 	NULL
 };
 
@@ -416,8 +590,8 @@ fail:
 }
 
 static int vl6180_write_raw(struct iio_dev *indio_dev,
-			     struct iio_chan_spec const *chan,
-			     int val, int val2, long mask)
+				 struct iio_chan_spec const *chan,
+				 int val, int val2, long mask)
 {
 	struct vl6180_data *data = iio_priv(indio_dev);
 

@@ -1,5 +1,5 @@
 /*
- * arch/arm64/boot/dts/amlogic/g12a_s905d2_u200_superbird.dts
+ * arch/arm64/boot/dts/amlogic/superbird_evt.dts
  *
  * Copyright (C) 2017 Amlogic, Inc. All rights reserved.
  *
@@ -165,41 +165,39 @@
 
 		preset1 {
 			label = "GPIO Key preset1";
-			linux,code = <0x101>;
+			linux,code = <2>;
 			gpios = <&gpio GPIOA_0 GPIO_ACTIVE_LOW>;
 		};
 
 		preset2 {
 			label = "GPIO Key preset2";
-			linux,code = <0x102>;
+			linux,code = <3>;
 			gpios = <&gpio GPIOA_1 GPIO_ACTIVE_LOW>;
 		};
 
 		preset3 {
 			label = "GPIO Key preset3";
-			linux,code = <0x103>;
+			linux,code = <4>;
 			gpios = <&gpio GPIOA_2 GPIO_ACTIVE_LOW>;
 		};
 
 		preset4 {
 			label = "GPIO Key preset4";
-			linux,code = <0x104>;
+			linux,code = <5>;
 			gpios = <&gpio GPIOA_3 GPIO_ACTIVE_LOW>;
 		};
 
 		mute {
 			label = "GPIO Key mute";
-			linux,code = <113>;
+			linux,code = <50>;
 			gpios = <&gpio GPIOAO_3 GPIO_ACTIVE_LOW>;
 		};
 
 		back {
 			label = "GPIO Key back";
-			linux,code = <4>;
+			linux,code = <1>;
 			gpios = <&gpio GPIOA_5 GPIO_ACTIVE_LOW>;
 		};
-
-
 
 		select {
 			label = "GPIO Key select";
@@ -216,13 +214,12 @@
 			pinctrl-names="default";
 			pinctrl-0=<&spotify_rotary>;
 
-			linux,axis = <0>; /* REL_X */
+			linux,axis = <6>; /* REL_HWHEEL */
 			rotary-encoder,encoding = "gray";
 			rotary-encoder,relative-axis;
+			rotary-encoder,steps-per-period = <2>;
 			wakeup-source = <0>;
 	};
-
-
 
 	disabled-pins {
 		pinctrl-names = "default";
@@ -275,40 +272,6 @@
 			0xffff  0x0>; /* ending flag */
 	};
 
-	bt-dev{
-		compatible = "amlogic, bt-dev";
-		dev_name = "bt-dev";
-		status = "okay";
-		gpio_reset = <&gpio       GPIOX_17       GPIO_ACTIVE_HIGH>;
-		gpio_hostwake = <&gpio       GPIOX_7       GPIO_ACTIVE_HIGH>;
-	};
-/*
-	wifi{
-		compatible = "amlogic, aml_wifi";
-		dev_name = "aml_wifi";
-		status = "okay";
-		interrupt_pin = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
-		irq_trigger_type = "GPIO_IRQ_LOW";
-		power_on_pin = <&gpio GPIOX_6 GPIO_ACTIVE_HIGH>;
-		dhd_static_buf;	//if use bcm wifi, config dhd_static_buf
-		pinctrl-names = "default";
-		pinctrl-0 = <&pwm_e_pins>;
-		pwm_config = <&wifi_pwm_conf>;
-	};
-
-	wifi_pwm_conf:wifi_pwm_conf{
-		pwm_channel1_conf {
-			pwms = <&pwm_ef MESON_PWM_0 30541 0>;
-			duty-cycle = <15270>;
-			times = <10>;
-		};
-		pwm_channel2_conf {
-			pwms = <&pwm_ef MESON_PWM_2 30500 0>;
-			duty-cycle = <15250>;
-			times = <12>;
-		};
-	};
-*/
 	codec_mm {
 		compatible = "amlogic, codec, mm";
 		memory-region = <&codec_mm_cma &codec_mm_reserved>;
@@ -360,8 +323,46 @@
 		vm_id = <0>;
 	};
 
+	amvdec_656in {
+		/*bt656 gpio conflict with i2c0*/
+		compatible = "amlogic, amvdec_656in";
+		dev_name = "amvdec_656in";
+		status = "disabled";
+		reg = <0x0 0xffe02000 0x0 0x7c>;
+		clocks = <&clkc CLKID_BT656_COMP>,
+				<&clkc CLKID_BT656>;
+		clock-names = "cts_bt656_clk1",
+					"clk_gate_bt656";
+		/* bt656in1, bt656in2 */
+		bt656in1 {
+		bt656_id = <1>;
+		status = "disabled";
+		};
+	};
 
-
+	aml_cams {
+		compatible = "amlogic, cams_prober";
+		status = "disabled";
+		pinctrl-names="default";
+		pinctrl-0=<&cam_dvp_pins &gen_clk_ee_z>;
+		clocks = <&clkc CLKID_GEN_CLK>;
+		clock-names = "g12a_24m";
+		cam_0{
+			cam_name = "gc2145";
+			front_back = <0>;
+			/*u200 i2c2 gpio conflict with ethmac*/
+			camera-i2c-bus = <&i2c2>;
+			gpio_pwdn-gpios = <&gpio GPIOZ_2 GPIO_ACTIVE_HIGH>;
+			gpio_rst-gpios = <&gpio GPIOZ_12 GPIO_ACTIVE_HIGH>;
+			mirror_flip = <1>;
+			vertical_flip = <1>;
+			spread_spectrum = <0>;
+			bt_path = "gpio";
+			bt_path_count = <1>;
+			vdin_path = <0>;
+			status = "disabled";
+		};
+	};
 
 	/* Spotify disabled */
 	gpio_keypad{
@@ -945,13 +946,12 @@
 &i2c3 {
 	status = "okay";
 	pinctrl-names="default";
-	pinctrl-0=<&i2c3_master_pins2>;
-	clock-frequency= <100000>;
+	pinctrl-0=<&spotify_mfi_i2c_pins>;
+	clock-frequency= <400000>;
 
-	mfi@21 {
-		reg = <0x21>;
+	mfi@10 {
+		reg = <0x10>;		
 	};
-
 };
 
 &audiobus {
@@ -1218,6 +1218,21 @@
 		};
 	};
 
+	spotify_mfi_i2c_pins: spotify_mfi_i2c_pins {
+		mux {
+			groups = "i2c3_sda_a",
+			"i2c3_sck_a";
+			function = "i2c3";
+		};
+	};
+
+	spotify_bluetooth_wake_pins: spotify_bluetooth_wake_pins {
+		pins = "GPIOX_6",
+			"GPIOX_7";
+		bias-disable;
+		input-enable;
+	};
+
 	spotify_disabled_pins_c: spotify_disabled_pins_c {
 		mux {
 			pins = "GPIOC_0",
@@ -1237,9 +1252,7 @@
 			pins = "GPIOA_10",
 				"GPIOA_11",
 				"GPIOA_12",
-				"GPIOA_13",
-				"GPIOA_14",
-				"GPIOA_15";
+				"GPIOA_13";
 			bias-pull-down;
 			output-low;
 		};
@@ -1327,7 +1340,15 @@
 		};
 	};
 
-
+	cam_dvp_pins:cam_dvp_pins {
+		mux {
+			groups = "bt656_a_vs", "bt656_a_hs", "bt656_a_clk",
+				"bt656_a_din0", "bt656_a_din1", "bt656_a_din2",
+				"bt656_a_din3", "bt656_a_din4", "bt656_a_din5",
+				"bt656_a_din6", "bt656_a_din7";
+			function = "bt656";
+		};
+	};
 
 
 }; /* end of pinctrl_periphs */
@@ -1386,7 +1407,6 @@
 	bluetooth {
 			compatible = "brcm,bcm4345c0";
 			max-speed = <3000000>;
-			shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
 			device-wakeup-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_HIGH>;
 			host-wakeup-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
 	};

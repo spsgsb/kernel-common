@@ -23,6 +23,7 @@ amlogic	Amlogic, Inc.
 ampire	Ampire Co., Ltd.
 ams	AMS AG
 amstaos	AMS-Taos Inc.
+amlogic,meson-gpio-intc-ext
 analogix	Analogix Semiconductor, Inc.
 android
 android,odm
@@ -31,6 +32,7 @@ android,fstab
 android,vbmeta
 android,vendor
 android,firmware
+android,system
 apm	Applied Micro Circuits Corporation (APM)
 aptina	Aptina Imaging
 arasan	Arasan Chip Systems

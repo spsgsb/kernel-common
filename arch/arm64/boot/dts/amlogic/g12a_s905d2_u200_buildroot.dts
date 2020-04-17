@@ -782,7 +782,7 @@
 
 &meson_fb {
 	status = "okay";
-	display_size_default = <1920 1080 1920 2160 32>;
+	display_size_default = <480 800 480 1600 24>;
 	mem_size = <0x00800000 0x1980000 0x100000 0x100000 0x800000>;
 	logo_addr = "0x7f800000";
 	mem_alloc = <1>;
@@ -818,6 +818,22 @@
 		max-touch-number = <10>;
 	};
 };
+
+&i2c2 {
+	status = "okay";
+	pinctrl-names="default";
+	pinctrl-0=<&i2c2_master_pins2>;
+	clock-frequency= <400000>;
+
+	vl6180@29 {
+		compatible = "st,vl6180";
+		reg = <0x29>;
+
+	};
+
+};
+
+
 
 &i2c3 {
 	status = "okay";
