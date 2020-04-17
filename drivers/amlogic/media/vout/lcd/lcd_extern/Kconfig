@@ -114,3 +114,13 @@ config AMLOGIC_LCD_EXTERN_MIPI_TL050FHV02CT
 		Once the power on, according to the timing requirements,
 		through the mipi interface to write data to the LCD,
 		make its initialization
+
+config AMLOGIC_LCD_EXTERN_MIPI_ILI9806E
+	bool "lcd external mipi ILI9806E init driver"
+	default n
+	depends on AMLOGIC_LCD_EXTERN
+	help
+		Amlogic LCD external mipi_ILI9806E init driver support
+		Once the power on, according to the timing requirements,
+		through the mipi interface to write data to the LCD,
+		make its initialization
