@@ -17,13 +17,13 @@
 
 /dts-v1/;
 
-#include "mesong12a.dtsi"
-#include "partition_mbox_superbird.dtsi"
-#include "mesong12a_skt-panel.dtsi"
+#include "mesong12a_superbird.dtsi"
+#include "partition_evt_superbird.dtsi"
+#include "mesong12a_panel_superbird.dtsi"
 
 / {
 	model = "Amlogic";
-	amlogic-dt-id = "g12a_u200_2g";
+	amlogic-dt-id = "g12a_evt_1g";
 	compatible = "amlogic, g12a";
 	interrupt-parent = <&gic>;
 	#address-cells = <2>;
@@ -46,7 +46,7 @@
 
 	memory@00000000 {
 		device_type = "memory";
-		linux,usable-memory = <0x0 0x000000 0x0 0x80000000>;
+		linux,usable-memory = <0x0 0x000000 0x0 0x40000000>;
 	};
 
 	reserved-memory {
@@ -81,7 +81,7 @@
 			reusable;
 			size = <0x0 0x800000>;
 			alignment = <0x0 0x400000>;
-			alloc-ranges = <0x0 0x7f800000 0x0 0x800000>;
+			alloc-ranges = <0x0 0x3f800000 0x0 0x800000>;
 		};
 		ion_cma_reserved:linux,ion-dev {
 			compatible = "shared-dma-pool";
@@ -149,7 +149,7 @@
 
 		sys_led {
 			label="sys_led";
-			gpios=<&gpio_ao GPIOAO_11 GPIO_ACTIVE_HIGH>;
+			gpios=<&gpio_ao GPIOAO_5 GPIO_ACTIVE_HIGH>;
 			default-state ="on";
 		};
 	};
@@ -190,19 +190,13 @@
 		mute {
 			label = "GPIO Key mute";
 			linux,code = <50>;
-			gpios = <&gpio GPIOA_4 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio GPIOAO_3 GPIO_ACTIVE_LOW>;
 		};
 
 		back {
 			label = "GPIO Key back";
 			linux,code = <1>;
 			gpios = <&gpio GPIOA_5 GPIO_ACTIVE_LOW>;
-		};
-
-		home {
-			label = "GPIO Key home";
-			linux,code = <6>;
-			gpios = <&gpio GPIOA_6 GPIO_ACTIVE_LOW>;
 		};
 
 		select {
@@ -225,15 +219,6 @@
 			rotary-encoder,relative-axis;
 			rotary-encoder,steps-per-period = <2>;
 			wakeup-source = <0>;
-	};
-
-	beeper {
-		compatible = "pwm-beeper";
-		pwms = <&pwm_cd>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&spotify_buzzer>;
-
-		status = "okay";
 	};
 
 	disabled-pins {
@@ -285,32 +270,6 @@
 			0x1b05  0x9
 			0x1c59  0xf850
 			0xffff  0x0>; /* ending flag */
-	};
-
-	wifi{
-		compatible = "amlogic, aml_wifi";
-		dev_name = "aml_wifi";
-		status = "okay";
-		interrupt_pin = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
-		irq_trigger_type = "GPIO_IRQ_LOW";
-		power_on_pin = <&gpio GPIOX_6 GPIO_ACTIVE_HIGH>;
-		dhd_static_buf;	//if use bcm wifi, config dhd_static_buf
-		pinctrl-names = "default";
-		pinctrl-0 = <&pwm_e_pins>;
-		pwm_config = <&wifi_pwm_conf>;
-	};
-
-	wifi_pwm_conf:wifi_pwm_conf{
-		pwm_channel1_conf {
-			pwms = <&pwm_ef MESON_PWM_0 30541 0>;
-			duty-cycle = <15270>;
-			times = <10>;
-		};
-		pwm_channel2_conf {
-			pwms = <&pwm_ef MESON_PWM_2 30500 0>;
-			duty-cycle = <15250>;
-			times = <12>;
-		};
 	};
 
 	codec_mm {
@@ -904,8 +863,8 @@
 	display_size_default = <480 800 480 1600 24>;
 	display_mode_default = "panel";
 	mem_size = <0x00800000 0x1980000 0x100000 0x100000 0x800000>;
-	logo_addr = "0x7f800000";
-	mem_alloc = <1>;
+	logo_addr = "0x3f800000";
+	mem_alloc = <0>;
 	pxp_mode = <0>; /** 0:normal mode 1:pxp mode */
 };
 
@@ -922,7 +881,7 @@
 
 	gt9xx@5d {
 		compatible = "goodix,gt9xx";
-		status = "okay";
+		status = "disabled";
 		reg = <0x5d>;
 
 		interrupt-parent = <&gpio_intc>;
@@ -941,6 +900,20 @@
 		y_max = <1024>;
 		max-touch-number = <10>;
 	};
+
+	tlsc6x_ts@2e {
+		compatible = "tlsc6x,tlsc6x_ts";
+		status = "okay";
+		reg = <0x2e>;
+		pinctrl-names = "pmx_ts_init", "rst_output0", "rst_output1";
+		pinctrl-0 = <&tp_int_input &state_rst_output1>;
+		pinctrl-1 = <&state_rst_output0>;
+		pinctrl-2 = <&state_rst_output1>;
+		gpios = <&gpio GPIOZ_3 0x00
+			&gpio GPIOZ_4 0x00>;
+		TP_MAX_X = <479>;
+		TP_MAX_Y = <959>;
+	};
 };
 
 &i2c2 {
@@ -952,11 +925,32 @@
 	vl6180@29 {
 		compatible = "st,vl6180";
 		reg = <0x29>;
+		status = "disabled";
 	};
 
-	lsm6dsl@6b {
-		compatible = "st,lsm6dsl";
+	lis2dh12@31 {
+		compatible = "st,lis2dh12-accel";
+		reg = <0x31>;
+	};
+	max20332@6b {
 		reg = <0x6b>;
+	};
+	
+	tmd27721@73 {
+		compatible = "amstaos,tmd2772";
+		reg = <0x73>;
+	};
+	
+};
+
+&i2c3 {
+	status = "okay";
+	pinctrl-names="default";
+	pinctrl-0=<&spotify_mfi_i2c_pins>;
+	clock-frequency= <400000>;
+
+	mfi@10 {
+		reg = <0x10>;		
 	};
 };
 
@@ -1042,6 +1036,8 @@
 
 	aml_loopback: loopback {
 		compatible = "amlogic, snd-loopback";
+		clocks = <&clkc CLKID_MPLL1>;
+		clock-names = "datalb_mpll";	
 		/*
 		 * 0: out rate = in data rate;
 		 * 1: out rate = loopback data rate;
@@ -1068,7 +1064,8 @@
 		 * 5: PAD_tdminC
 		 */
 		datalb_src = <0>;
-		datalb_chnum = <8>;
+		datalb_chnum = <2>;
+		datalb-lane-mask-in = <0 1>;
 		datalb_chmask = <0x3>;
 
 		status = "okay";
@@ -1198,10 +1195,12 @@
 			pins = "GPIOZ_10";
 			bias-pull-down;
 		};
+		/*
 		mux1 {
 			pins = "GPIOZ_11";
 			bias-pull-up;
 		};
+		*/
 	};
 
 	spotify_imu_gpio: spotify_imu_gpio {
@@ -1217,6 +1216,21 @@
 			function = "gpio_periphs";
 			bias-disable;
 		};
+	};
+
+	spotify_mfi_i2c_pins: spotify_mfi_i2c_pins {
+		mux {
+			groups = "i2c3_sda_a",
+			"i2c3_sck_a";
+			function = "i2c3";
+		};
+	};
+
+	spotify_bluetooth_wake_pins: spotify_bluetooth_wake_pins {
+		pins = "GPIOX_6",
+			"GPIOX_7";
+		bias-disable;
+		input-enable;
 	};
 
 	spotify_disabled_pins_c: spotify_disabled_pins_c {
@@ -1238,9 +1252,7 @@
 			pins = "GPIOA_10",
 				"GPIOA_11",
 				"GPIOA_12",
-				"GPIOA_13",
-				"GPIOA_14",
-				"GPIOA_15";
+				"GPIOA_13";
 			bias-pull-down;
 			output-low;
 		};
@@ -1260,10 +1272,26 @@
 		};
 	};
 
-	spotify_buzzer: spotify_buzzer {
+	tp_int_input: eint@0 {
 		mux {
-			groups = "pwm_c_c4";
-			function = "pwm_c";
+			pins = "GPIOZ_4";
+			bias-pull-up;
+		};
+	};
+
+	state_rst_output0: rstoutput0 {
+		mux {
+			pins = "GPIOZ_3";
+			output-low;
+			bias-pull-down;
+		};
+	};
+
+	state_rst_output1: rstoutput1 {
+		mux {
+			pins = "GPIOZ_3";
+			output-high;
+			bias-pull-up;
 		};
 	};
 
@@ -1360,7 +1388,7 @@
 };
 
 &usb3_phy_v2 {
-	status = "okay";
+	status = "disabled";
 	portnum = <1>;
 	otg = <1>;
 	gpio-vbus-power = "GPIOH_6";
@@ -1379,9 +1407,8 @@
 	bluetooth {
 			compatible = "brcm,bcm4345c0";
 			max-speed = <3000000>;
-			shutdown-gpios = <&gpio GPIOX_17 GPIO_ACTIVE_HIGH>;
-			device-wakeup-gpios = <&gpio GPIOX_19 GPIO_ACTIVE_HIGH>;
-			host-wakeup-gpios = <&gpio GPIOX_18 GPIO_ACTIVE_HIGH>;
+			device-wakeup-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_HIGH>;
+			host-wakeup-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
 	};
 };
 

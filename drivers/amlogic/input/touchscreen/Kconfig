@@ -32,4 +32,15 @@ config AMLOGIC_TOUCHSCREEN_GT9XX
 	help
 	  Say Y here if you want to use the Goodix gt9xx.
 
+config AMLOGIC_TOUCHSCREEN_TLSC6X
+	bool "Focaltech Touchscreen"
+		depends on I2C
+		default n
+		help
+		  Say Y here if you have tlsc6x touch panel.
+		  If unsure, say N.
+
+config AMLOGIC_TS_FIRMWARE
+	string "config board firmware folder"
+
 endif
