@@ -328,7 +328,8 @@ static const struct {
 	{ 0x610c, "BCM4354"	},	/* 003.001.012 */
 	{ 0x2209, "BCM43430A1"  },	/* 001.002.009 */
 	{ 0x6119, "BCM4345C0"	},	/* 003.001.025 */
-	{ 0x220b, "BCM20703A2"} /* 001.002.011 */
+	{ 0x220b, "BCM20703A2"}, /* 001.002.011 */
+	{ }
 };
 
 int btbcm_initialize(struct hci_dev *hdev, char *fw_name, size_t len)
