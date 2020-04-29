@@ -932,8 +932,8 @@
 		compatible = "st,lis2dh12-accel";
 		reg = <0x31>;
 	};
-	max20332@6b {
-		reg = <0x6b>;
+	max20332@35 {
+		reg = <0x35>;
 	};
 	
 	tmd27721@73 {
@@ -950,6 +950,7 @@
 	clock-frequency= <400000>;
 
 	mfi@10 {
+		compatible = "apple_mfi_auth";
 		reg = <0x10>;		
 	};
 };
@@ -1223,6 +1224,8 @@
 			groups = "i2c3_sda_a",
 			"i2c3_sck_a";
 			function = "i2c3";
+			bias-disable;
+			drive-strength = <2>;
 		};
 	};
 

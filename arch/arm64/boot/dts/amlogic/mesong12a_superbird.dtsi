@@ -1330,7 +1330,7 @@
 		display_mode_default = "1080p60hz";
 		scale_mode = <1>;
 		/** 0:VPU free scale 1:OSD free scale 2:OSD super scale */
-		display_size_default = <480 800 480 1600 16>;
+		display_size_default = <480 800 480 1600 24>;
 		/*1920*1080*4*3 = 0x17BB000*/
 		clocks = <&clkc CLKID_VPU_CLKC_MUX>;
 		clock-names = "vpu_clkc";

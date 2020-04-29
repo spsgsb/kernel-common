@@ -19,7 +19,7 @@
 
 #include "mesong12a_superbird.dtsi"
 #include "partition_ep0_superbird.dtsi"
-#include "mesong12a_panel_superbird.dtsi"
+#include "mesong12a_skt-panel.dtsi"
 
 / {
 	model = "Amlogic";
