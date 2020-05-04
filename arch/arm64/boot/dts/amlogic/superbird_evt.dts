@@ -190,7 +190,7 @@
 		mute {
 			label = "GPIO Key mute";
 			linux,code = <50>;
-			gpios = <&gpio GPIOAO_3 GPIO_ACTIVE_LOW>;
+			gpios = <&gpio_ao GPIOAO_3 GPIO_ACTIVE_LOW>;
 		};
 
 		back {
@@ -932,6 +932,7 @@
 		compatible = "st,lis2dh12-accel";
 		reg = <0x31>;
 	};
+	
 	max20332@35 {
 		reg = <0x35>;
 	};
@@ -1158,9 +1159,8 @@
 				"GPIOA_1",
 				"GPIOA_2",
 				"GPIOA_3",
-				"GPIOA_4",
-				"GPIOA_5",
-				"GPIOA_6";
+				"GPIOAO_3",
+				"GPIOA_5";
 			bias-disable;
 			input-enable;
 		};
