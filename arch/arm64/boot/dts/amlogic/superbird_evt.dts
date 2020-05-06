@@ -922,24 +922,18 @@
 	pinctrl-0=<&i2c2_master_pins2 &spotify_prox_gpio &spotify_imu_gpio>;
 	clock-frequency= <400000>;
 
-	vl6180@29 {
-		compatible = "st,vl6180";
-		reg = <0x29>;
-		status = "disabled";
-	};
-
-	lis2dh12@31 {
+	lis2dh12@18 {
 		compatible = "st,lis2dh12-accel";
-		reg = <0x31>;
+		reg = <0x18>;
 	};
 	
 	max20332@35 {
 		reg = <0x35>;
 	};
 	
-	tmd27721@73 {
+	tmd27721@39 {
 		compatible = "amstaos,tmd2772";
-		reg = <0x73>;
+		reg = <0x39>;
 	};
 	
 };
