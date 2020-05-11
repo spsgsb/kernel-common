@@ -54,7 +54,7 @@
 
 DEFINE_MUTEX(i2c_rw_access);
 
-#define	TOUCH_VIRTUAL_KEYS
+#undef TOUCH_VIRTUAL_KEYS
 #define	MULTI_PROTOCOL_TYPE_B	0
 #define	TS_MAX_FINGER		2
 
@@ -70,7 +70,7 @@ struct tlsc6x_platform_data{
 
 static struct workqueue_struct *tlsc6x_wq;
 
-
+#undef TP_PROXIMITY_SENSOR
 #ifdef TP_PROXIMITY_SENSOR
 #define LTR_IOCTL_MAGIC 0x1C
 #define LTR_IOCTL_GET_PFLAG _IOR(LTR_IOCTL_MAGIC, 1, int)
@@ -183,6 +183,8 @@ static struct kobj_attribute virtual_keys_attr = {
     },
     .show = &virtual_keys_show,
 };
+
+#endif
 
 int tlsc6x_i2c_read_nolock(struct i2c_client *client, char *writebuf, int writelen, char *readbuf, int readlen)
 {
@@ -355,6 +357,7 @@ int tlsc6x_read_reg(struct i2c_client *client, u8 regaddr, u8 *regvalue)
 	return tlsc6x_i2c_read(client, &regaddr, 1, regvalue, 1);
 }
 
+#ifdef TOUCH_VIRTUAL_KEYS
 static struct attribute *properties_attrs[] = {
     &virtual_keys_attr.attr,
     NULL
@@ -363,6 +366,7 @@ static struct attribute *properties_attrs[] = {
 static struct attribute_group properties_attr_group = {
     .attrs = properties_attrs,
 };
+#endif
 
 void tlsc_irq_disable(struct tlsc6x_data *drvdata)
 {
@@ -389,6 +393,8 @@ void tlsc_irq_enable(struct tlsc6x_data *drvdata)
 	spin_unlock_irqrestore(&drvdata->irq_lock, irqflags);
 }
 
+#ifdef TOUCH_VIRTUAL_KEYS
+
 static void tlsc6x_virtual_keys_init(void)
 {
     int ret = 0;
@@ -410,17 +416,18 @@ static void tlsc6x_virtual_keys_init(void)
 
 static void tlsc6x_clear_report_data(struct tlsc6x_data *drvdata)
 {
+    #if MULTI_PROTOCOL_TYPE_B
     int i;
 
     for(i = 0; i<TS_MAX_FINGER; i++){
-    #if MULTI_PROTOCOL_TYPE_B
         input_mt_slot(drvdata->input_dev, i);
         input_mt_report_slot_state(drvdata->input_dev, MT_TOOL_FINGER, false);
-    #endif
     }
+    input_mt_sync_frame(drvdata->input_dev);
+    #endif
 
-    input_report_key(drvdata->input_dev, BTN_TOUCH, 0);
     #if !MULTI_PROTOCOL_TYPE_B
+    input_report_key(drvdata->input_dev, BTN_TOUCH, 0);
     input_mt_sync(drvdata->input_dev);
     #endif
     input_sync(drvdata->input_dev);
@@ -479,14 +486,14 @@ static int tlsc6x_update_data(struct tlsc6x_data *data)
             #if MULTI_PROTOCOL_TYPE_B
                 input_mt_slot(data->input_dev, buf[6*i+5]>>4);
                 input_mt_report_slot_state(data->input_dev, MT_TOOL_FINGER, true);
-            //#else
-                //input_report_abs(data->input_dev, ABS_MT_TRACKING_ID, buf[6 * i + 5] >> 4);
+            #else
+                input_report_abs(data->input_dev, ABS_MT_TRACKING_ID, buf[6 * i + 5] >> 4);
             #endif
                 input_report_abs(data->input_dev, ABS_MT_POSITION_X, x);
                 input_report_abs(data->input_dev, ABS_MT_POSITION_Y, y);
                 input_report_abs(data->input_dev, ABS_MT_PRESSURE, 15);
                 input_report_abs(data->input_dev, ABS_MT_TOUCH_MAJOR, ft_size);
-                input_report_key(data->input_dev, BTN_TOUCH, 1);
+                // input_report_key(data->input_dev, BTN_TOUCH, 1);
 		    #if !MULTI_PROTOCOL_TYPE_B
                 input_mt_sync(data->input_dev);
 		    #endif
@@ -500,6 +507,9 @@ static int tlsc6x_update_data(struct tlsc6x_data *data)
     if(0 == event->touch_point) {		
         tlsc6x_clear_report_data(data);
     }
+#if MULTI_PROTOCOL_TYPE_B
+    input_mt_sync_frame(data->input_dev);
+#endif
     input_sync(data->input_dev);
 
     return 0;
@@ -876,11 +886,13 @@ static struct tlsc6x_platform_data *tlsc6x_parse_dt(struct device *dev)
 		pdata->use_polling = 0;
 	}
 
+#ifdef TOUCH_VIRTUAL_KEYS
     ret = of_property_read_u32_array(np, "virtualkeys", pdata->virtualkeys,12);
     if(ret){
         TLSC_ERROR("fail to get virtualkeys\n");
         goto fail;
     }
+#endif
     ret = of_property_read_u32(np, "TP_MAX_X", &pdata->TP_MAX_X);
     if(ret){
         TLSC_ERROR("fail to get TP_MAX_X\n");
@@ -1341,9 +1353,12 @@ static int tlsc6x_probe(struct i2c_client *client, const struct i2c_device_id *i
     __set_bit(ABS_MT_POSITION_X, input_dev->absbit);
     __set_bit(ABS_MT_POSITION_Y, input_dev->absbit);
     __set_bit(ABS_MT_WIDTH_MAJOR, input_dev->absbit);
+
+    #ifdef TOUCH_VIRTUAL_KEYS
     __set_bit(KEY_APPSELECT,  input_dev->keybit);
     __set_bit(KEY_BACK,  input_dev->keybit);
     __set_bit(KEY_HOMEPAGE,  input_dev->keybit);
+    #endif
     set_bit(INPUT_PROP_DIRECT, input_dev->propbit);
     __set_bit(BTN_TOUCH, input_dev->keybit);
 
@@ -1358,6 +1373,7 @@ static int tlsc6x_probe(struct i2c_client *client, const struct i2c_device_id *i
 
     set_bit(EV_ABS, input_dev->evbit);
     set_bit(EV_KEY, input_dev->evbit);
+    set_bit(EV_SYN, input_dev->evbit);
 
     err = input_register_device(input_dev);
     if(err){
