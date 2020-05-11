@@ -886,9 +886,6 @@
 		reset-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_HIGH>;
 		irq-gpio = <&gpio GPIOZ_4 GPIO_ACTIVE_HIGH>;
 		polling-mode = <1>; /*1:polling mode, 0:irq mode*/
-		virtualkeys = <80 750 30 30
-			240 750 30 30
-			400 750 30 30>;
 		TP_MAX_X = <480>;
 		TP_MAX_Y = <800>;
 	};
