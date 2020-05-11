@@ -879,40 +879,18 @@
 	pinctrl-0=<&spotify_touch_i2c>;
 	clock-frequency = <400000>;
 
-	gt9xx@5d {
-		compatible = "goodix,gt9xx";
-		status = "disabled";
-		reg = <0x5d>;
-
-		interrupt-parent = <&gpio_intc>;
-		interrupts = <64 IRQ_TYPE_EDGE_FALLING>;
-		reset-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_LOW>;
-		irq-gpio = <&gpio GPIOZ_4 GPIO_ACTIVE_HIGH>;
-	};
-
-	ftxx@38 {
-		compatible = "focaltech,fts";
-		status = "disabled";
-		reg = <0x38>;
-		reset-gpio = <&gpio GPIOZ_9 0x00>;
-		irq-gpio = <&gpio GPIOZ_3 0x00>;
-		x_max = <600>;
-		y_max = <1024>;
-		max-touch-number = <10>;
-	};
-
 	tlsc6x_ts@2e {
 		compatible = "tlsc6x,tlsc6x_ts";
 		status = "okay";
 		reg = <0x2e>;
-		pinctrl-names = "pmx_ts_init", "rst_output0", "rst_output1";
-		pinctrl-0 = <&tp_int_input &state_rst_output1>;
-		pinctrl-1 = <&state_rst_output0>;
-		pinctrl-2 = <&state_rst_output1>;
-		gpios = <&gpio GPIOZ_3 0x00
-			&gpio GPIOZ_4 0x00>;
-		TP_MAX_X = <479>;
-		TP_MAX_Y = <959>;
+		reset-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_HIGH>;
+		irq-gpio = <&gpio GPIOZ_4 GPIO_ACTIVE_HIGH>;
+		polling-mode = <1>; /*1:polling mode, 0:irq mode*/
+		virtualkeys = <80 750 30 30
+			240 750 30 30
+			400 750 30 30>;
+		TP_MAX_X = <480>;
+		TP_MAX_Y = <800>;
 	};
 };
 
