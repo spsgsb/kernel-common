@@ -452,17 +452,17 @@
 			model_name = "ST7701S";
 			interface = "mipi";
 			basic_setting = <480 800 /*h_active, v_active*/
-				630 836 /*h_period, v_period*/
+				550 846 /*h_period, v_period*/
 				16 /*lcd_bits*/
-				51 86>; /*screen_widht, screen_height*/
-			lcd_timing = <10 50 0 /*hs_width, hs_bp, hs_pol*/
-				4 20 0>; /*vs_width, vs_bp, vs_pol*/
+				52 86>; /*screen_width, screen_height*/
+			lcd_timing = <10 30 0 /*hs_width, hs_bp, hs_pol*/
+				6 20 0>; /*vs_width, vs_bp, vs_pol*/
 			clk_attr = <0 /*fr_adj_type(0=clock,1=htotal,2=vtotal)*/
 				0 /*clk_ss_level*/
 				1 /*clk_auto_generate*/
-				31600800>; /*pixel_clk(unit in Hz)*/
+				27918000>; /*pixel_clk(unit in Hz)*/
 			mipi_attr = <2 /*lane_num*/
-				0 /*bit_rate_max(MHz)*/
+				672 /*bit_rate_max(MHz)*/
 				0 /*factor(*100, default 0 for auto)*/
 				1 /*operation_mode_init(0=video, 1=command)*/
 				0 /*operation_mode_display(0=video, 1=command)*/
@@ -1688,12 +1688,22 @@
 			init_on = <	0x05 1  0x11
 					0xfd 1  200      /* delay(ms) */
 					0x39 6  0xff 0x77 0x01 0x00 0x00 0x13
+
+					0x39 3  0xe8 0x00 0x0e
+					0x39 6  0xff 0x77 0x01 0x00 0x00 0x11
+					0xfd 1  120     /* delay(ms) */
+					0x39 6  0xff 0x77 0x01 0x00 0x00 0x13
+					0x39 3  0xe8 0x00 0x0c
+					0xfd 1  10     /* delay(ms) */
+					0x39 3  0xe8 0x00 0x00
+					0x39 6  0xff 0x77 0x01 0x00 0x00 0x13
+
 					0x15 2  0xef 0x08
 					0x39 6  0xff 0x77 0x01 0x00 0x00 0x10
 					0x39 3  0xc0 0x63 0x00
 					0x39 3  0xc1 0x0a 0x02
-					0x39 3  0xc2 0x01 0x02
-					0x15 2  0xcc 0x10
+					0x39 3  0xc2 0x07 0x02
+					0x15 2  0xcc 0x38 /* 1122 */
 					0x39 17 0xb0 0xcd 0x19 0x1d 0x0d 0x11
 						0x07 0x09 0x0a 0x09 0x24 0x07
 						0x15 0x12 0x24 0x2a 0x0b
@@ -1798,7 +1808,7 @@
 				200 200>; /*on_delay(ms), off_delay(ms)*/
 			bl_pwm_port = "PWM_F";
 			bl_pwm_attr = <0 /*pwm_method*/
-				180 /*pwm_freq(pwm:Hz, pwm_vs:multiple of vs)*/
+				30000 /*pwm_freq(pwm:Hz, pwm_vs:multiple of vs)*/
 				100 25>; /*duty_max(%), duty_min(%)*/
 			bl_pwm_power = <1 1 /*pwm_gpio_index, pwm_gpio_off*/
 				10 10>; /*pwm_on_delay(ms), pwm_off_delay(ms)*/
