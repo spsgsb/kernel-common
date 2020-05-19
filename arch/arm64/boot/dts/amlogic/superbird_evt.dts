@@ -18,7 +18,7 @@
 /dts-v1/;
 
 #include "mesong12a_superbird.dtsi"
-#include "partition_evt_superbird.dtsi"
+#include "partition_superbird_ab.dtsi"
 #include "mesong12a_panel_superbird.dtsi"
 
 / {
