@@ -113,7 +113,7 @@ void aml_pdm_ctrl(struct pdm_info *info)
 	/* must be sure that clk and pdm is enable */
 	aml_pdm_update_bits(PDM_CTRL,
 				(0x7 << 28 | 0xff << 8 | 0xff << 0),
-				/*(1 << 31) |*/
+				(1 << 31) |
 				/* invert the PDM_DCLK or not */
 				(0 << 30) |
 				/* output mode:  1: 24bits. 0: 32 bits */
