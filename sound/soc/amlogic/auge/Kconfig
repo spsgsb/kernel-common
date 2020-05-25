@@ -5,3 +5,13 @@ menuconfig AMLOGIC_SND_SOC_AUGE
 		Say Y or M if you want to add support for codecs attached to
 		the Amlogic Asoc interface. You will also need
 		to select the audio interfaces to support below.
+
+if AMLOGIC_SND_SOC_AUGE
+
+config AMLOGIC_SND_SOC_AUGE_INVERT_PDM_DCLK
+	bool "Invert the pdm clk to flip left and right channel"
+	default n
+	help
+		Say Y if your board has inverted microphones
+
+endif # AMLOGIC_SND_SOC_AUGE
