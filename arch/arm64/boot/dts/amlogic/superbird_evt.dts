@@ -20,6 +20,7 @@
 #include "mesong12a_superbird.dtsi"
 #include "partition_superbird_ab.dtsi"
 #include "mesong12a_panel_superbird.dtsi"
+#include <dt-bindings/iio/adc/amlogic-saradc.h>
 
 / {
 	model = "Amlogic";
@@ -228,6 +229,133 @@
 			&spotify_disabled_pins_h>;
 		status = "okay";
 	};
+
+	rt1: thermal-sensor@2 {
+	     compatible = "generic-adc-thermal";
+	     #thermal-sensor-cells = <0>;
+	     io-channels = <&saradc SARADC_CH2>;
+	     io-channel-names = "sensor-channel";
+	     temperature-lookup-table = < 85000  888
+				          75000  853
+					  65000  809
+					  55000  754
+					  45000  685
+					  35000  604
+					  25000  512
+					  15000  413
+					  5000   315
+					  560    274
+					  0      269 >;
+	};
+
+	rt2: thermal-sensor@3 {
+	     compatible = "generic-adc-thermal";
+	     #thermal-sensor-cells = <0>;
+	     io-channels = <&saradc SARADC_CH3>;
+	     io-channel-names = "sensor-channel";
+	     temperature-lookup-table = < 85000  888
+					  75000  853
+					  65000  809
+					  55000  754
+					  45000  685
+					  35000  604
+					  25000  512
+					  15000  413
+					  5000   315
+					  560    274
+					  0      269 >;
+	};
+
+	rt3: thermal-sensor@0 {
+	     compatible = "generic-adc-thermal";
+	     #thermal-sensor-cells = <0>;
+	     io-channels = <&saradc SARADC_CH0>;
+	     io-channel-names = "sensor-channel";
+	     temperature-lookup-table = < 85000  888
+					  75000  853
+					  65000  809
+					  55000  754
+					  45000  685
+					  35000  604
+					  25000  512
+					  15000  413
+					  5000   315
+					  560    274
+					  0      269 >;
+	};
+
+	thermal-zones {
+	        bluetooth_thermal {
+		        polling-delay = <15000>;
+			polling-delay-passive = <1000>;
+			thermal-sensors = <&rt1>;
+
+			trips {
+			        bt_pswitchon: bt_pswitchon {
+				        temperature = <60000>;
+					type = "passive";
+					hysteresis = <1000>;
+				};
+				bt_pcontrol: bt_pcontrol {
+					temperature = <75000>;
+					hysteresis = <5000>;
+					type = "passive";
+				};
+			        bt_critical: bt_critical {
+				        temperature = <85000>;
+					type = "critical";
+					hysteresis = <1000>;
+				};
+			};
+		};
+	        dram_thermal {
+		        polling-delay = <15000>;
+			polling-delay-passive = <1000>;
+			thermal-sensors = <&rt2>;
+
+			trips {
+			        dram_pswitchon: dram_pswitchon {
+				        temperature = <60000>;
+					type = "passive";
+					hysteresis = <1000>;
+				};
+				dram_pcontrol: dram_pcontrol {
+					temperature = <75000>;
+					hysteresis = <5000>;
+					type = "passive";
+				};
+			        dram_critical: dram_critical {
+				        temperature = <85000>;
+					type = "critical";
+					hysteresis = <1000>;
+				};
+			};
+		};
+	        pcb_thermal {
+		        polling-delay = <15000>;
+			polling-delay-passive = <1000>;
+			thermal-sensors = <&rt3>;
+
+			trips {
+			        pcb_pswitchon: pcb_pswitchon {
+				        temperature = <60000>;
+					type = "passive";
+					hysteresis = <1000>;
+				};
+				pcb_pcontrol: pcb_pcontrol {
+					temperature = <75000>;
+					hysteresis = <5000>;
+					type = "passive";
+				};
+			        pcb_critical: pcb_critical {
+				        temperature = <85000>;
+					type = "critical";
+					hysteresis = <1000>;
+				};
+			};
+		};
+	};
+
 
 	/* Spotify modifications end */
 

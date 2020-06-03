@@ -55,7 +55,7 @@
 DEFINE_MUTEX(i2c_rw_access);
 
 #undef TOUCH_VIRTUAL_KEYS
-#define	MULTI_PROTOCOL_TYPE_B	0
+#define	MULTI_PROTOCOL_TYPE_B	1
 #define	TS_MAX_FINGER		2
 
 struct tlsc6x_platform_data{
@@ -422,12 +422,15 @@ static void tlsc6x_clear_report_data(struct tlsc6x_data *drvdata)
     for(i = 0; i<TS_MAX_FINGER; i++){
         input_mt_slot(drvdata->input_dev, i);
         input_mt_report_slot_state(drvdata->input_dev, MT_TOOL_FINGER, false);
+        input_report_abs(drvdata->input_dev, ABS_MT_PRESSURE, 0);
     }
     input_mt_sync_frame(drvdata->input_dev);
     #endif
 
-    #if !MULTI_PROTOCOL_TYPE_B
     input_report_key(drvdata->input_dev, BTN_TOUCH, 0);
+
+    #if !MULTI_PROTOCOL_TYPE_B
+    input_report_abs(drvdata->input_dev, ABS_MT_PRESSURE, 0);
     input_mt_sync(drvdata->input_dev);
     #endif
     input_sync(drvdata->input_dev);
@@ -491,9 +494,9 @@ static int tlsc6x_update_data(struct tlsc6x_data *data)
             #endif
                 input_report_abs(data->input_dev, ABS_MT_POSITION_X, x);
                 input_report_abs(data->input_dev, ABS_MT_POSITION_Y, y);
-                input_report_abs(data->input_dev, ABS_MT_PRESSURE, 15);
+                input_report_abs(data->input_dev, ABS_MT_PRESSURE, ft_pressure);
                 input_report_abs(data->input_dev, ABS_MT_TOUCH_MAJOR, ft_size);
-                // input_report_key(data->input_dev, BTN_TOUCH, 1);
+                input_report_key(data->input_dev, BTN_TOUCH, 1);
 		    #if !MULTI_PROTOCOL_TYPE_B
                 input_mt_sync(data->input_dev);
 		    #endif
@@ -1353,6 +1356,7 @@ static int tlsc6x_probe(struct i2c_client *client, const struct i2c_device_id *i
     __set_bit(ABS_MT_POSITION_X, input_dev->absbit);
     __set_bit(ABS_MT_POSITION_Y, input_dev->absbit);
     __set_bit(ABS_MT_WIDTH_MAJOR, input_dev->absbit);
+    __set_bit(ABS_MT_PRESSURE, input_dev->absbit);
 
     #ifdef TOUCH_VIRTUAL_KEYS
     __set_bit(KEY_APPSELECT,  input_dev->keybit);

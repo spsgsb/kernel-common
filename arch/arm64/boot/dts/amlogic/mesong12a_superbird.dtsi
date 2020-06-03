@@ -1641,12 +1641,12 @@
 					type = "passive";
 				};
 				pcontrol: trip-point@1 {
-					temperature = <75000>;
+					temperature = <85000>;
 					hysteresis = <5000>;
 					type = "passive";
 				};
 				phot: trip-point@2 {
-					temperature = <85000>;
+					temperature = <95000>;
 					hysteresis = <5000>;
 					type = "hot";
 				};
