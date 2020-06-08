@@ -1800,7 +1800,7 @@
 			index = <0>;
 			bl_name = "backlight_pwm";
 			bl_level_default_uboot_kernel = <100 100>;
-			bl_level_attr = <255 10 /*max, min*/
+			bl_level_attr = <255 1 /*max, min*/
 				128 128>; /*mid, mid_mapping*/
 			bl_ctrl_method = <1>; /* 1=pwm, 2=pwm_combo, 4=extern */
 			bl_power_attr = <0 /*en_gpio_index*/
@@ -1809,7 +1809,7 @@
 			bl_pwm_port = "PWM_F";
 			bl_pwm_attr = <0 /*pwm_method*/
 				30000 /*pwm_freq(pwm:Hz, pwm_vs:multiple of vs)*/
-				100 25>; /*duty_max(%), duty_min(%)*/
+				100 0>; /*duty_max(%), duty_min(%)*/
 			bl_pwm_power = <1 1 /*pwm_gpio_index, pwm_gpio_off*/
 				10 10>; /*pwm_on_delay(ms), pwm_off_delay(ms)*/
 			bl_pwm_en_sequence_reverse = <0>; /* 1 for reverse */
