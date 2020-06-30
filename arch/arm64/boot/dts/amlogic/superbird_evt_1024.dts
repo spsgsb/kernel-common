@@ -1326,16 +1326,16 @@
 		};
 	};
 
-	spotify_bluetooth_wake_pin_out: spotify_bluetooth_wake_pin_out {
+	spotify_bluetooth_bt_wake_host: spotify_bluetooth_bt_wake_host {
 		pins = "GPIOX_6";
 		bias-disable;
-		output-enable;
+		input-enable;
 	};
 
-	spotify_bluetooth_wake_pin_in: spotify_bluetooth_wake_pin_in {
+	spotify_bluetooth_host_wake_bt: spotify_bluetooth_host_wake_bt {
 		pins = "GPIOX_7";
 		bias-disable;
-		input-enable;
+		output-enable;
 	};
 
 	spotify_disabled_pins_c: spotify_disabled_pins_c {
@@ -1512,8 +1512,8 @@
 	bluetooth {
 			compatible = "brcm,bcm4345c0";
 			max-speed = <3000000>;
-			device-wakeup-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
-			host-wakeup-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_LOW>;
+			device-wakeup-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_LOW>;
+			host-wakeup-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
 	};
 };
 
