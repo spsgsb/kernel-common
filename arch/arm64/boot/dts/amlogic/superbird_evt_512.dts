@@ -356,6 +356,12 @@
 		};
 	};
 
+	bluetooth {
+			compatible = "brcm,bcm4345c0";
+			max-speed = <3000000>;
+			device-wakeup-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_HIGH>;
+			host-wakeup-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
+	};
 
 	/* Spotify modifications end */
 
@@ -1503,13 +1509,6 @@
 
 &uart_A {
 	status = "okay";
-
-	bluetooth {
-			compatible = "brcm,bcm4345c0";
-			max-speed = <3000000>;
-			device-wakeup-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_HIGH>;
-			host-wakeup-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
-	};
 };
 
 &sd_emmc_c {
