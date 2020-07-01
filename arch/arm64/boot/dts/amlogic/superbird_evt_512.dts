@@ -359,8 +359,8 @@
 	bluetooth {
 			compatible = "brcm,bcm4345c0";
 			max-speed = <3000000>;
-			device-wakeup-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_HIGH>;
-			host-wakeup-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
+			device-wakeup-gpios = <&gpio GPIOX_7 GPIO_ACTIVE_LOW>;
+			host-wakeup-gpios = <&gpio GPIOX_6 GPIO_ACTIVE_LOW>;
 	};
 
 	/* Spotify modifications end */
@@ -1332,11 +1332,16 @@
 		};
 	};
 
-	spotify_bluetooth_wake_pins: spotify_bluetooth_wake_pins {
-		pins = "GPIOX_6",
-			"GPIOX_7";
+	spotify_bluetooth_bt_wake_host: spotify_bluetooth_bt_wake_host {
+		pins = "GPIOX_6";
 		bias-disable;
 		input-enable;
+	};
+
+	spotify_bluetooth_host_wake_bt: spotify_bluetooth_host_wake_bt {
+		pins = "GPIOX_7";
+		bias-disable;
+		output-enable;
 	};
 
 	spotify_disabled_pins_c: spotify_disabled_pins_c {
