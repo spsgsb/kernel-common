@@ -72,6 +72,7 @@ DEFINE_EFUEKEY_SHOW_ATTR(mac)
 DEFINE_EFUEKEY_SHOW_ATTR(mac_bt)
 DEFINE_EFUEKEY_SHOW_ATTR(mac_wifi)
 DEFINE_EFUEKEY_SHOW_ATTR(usid)
+DEFINE_EFUEKEY_SHOW_ATTR(f_serial)
 
 
 #define  DEFINE_EFUEKEY_STORE_ATTR(keyname)	\
@@ -89,6 +90,7 @@ DEFINE_EFUEKEY_STORE_ATTR(mac)
 DEFINE_EFUEKEY_STORE_ATTR(mac_bt)
 DEFINE_EFUEKEY_STORE_ATTR(mac_wifi)
 DEFINE_EFUEKEY_STORE_ATTR(usid)
+DEFINE_EFUEKEY_STORE_ATTR(f_serial)
 
 int efuse_getinfo(char *item, struct efusekey_info *info)
 {
@@ -587,6 +589,8 @@ static struct class_attribute efuse_class_attrs[] = {
 	__ATTR(mac_wifi, 0700, show_mac_wifi, store_mac_wifi),
 
 	__ATTR(usid, 0700, show_usid, store_usid),
+
+	__ATTR(usid, 0700, show_f_serial, store_f_serial),
 
 	__ATTR_WO(amlogic_set),
 

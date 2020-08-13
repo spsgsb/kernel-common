@@ -35,6 +35,7 @@
 /* #define EFUSE_CUSTOMER_ID		9 */
 /* #define EFUSE_MACHINEID_ID		10 */
 #define EFUSE_NANDEXTCMD_ID		11
+#define EFUSE_F_SERIAL_ID		12
 
 #define EFUSE_DWORDS            128  /* (EFUSE_BITS/32) */
 

@@ -77,7 +77,7 @@ static struct efuseinfo_item_t efuseinfo_M8_serialNum_v1[] = {
 		.title = "usid",
 		.id = EFUSE_USID_ID,
 		.offset = 454,
-		.data_len = 48,
+		.data_len = 16,
 	},
 	{
 		.title = "version",
@@ -85,6 +85,12 @@ static struct efuseinfo_item_t efuseinfo_M8_serialNum_v1[] = {
 		.offset = M8_EFUSE_VERSION_OFFSET, /* 509 */
 		.data_len = M8_EFUSE_VERSION_DATA_LEN,
 	},
+	{
+		.title = "f_serial",
+		.id = EFUSE_F_SERIAL_ID,
+		.offset = 470,
+		.data_len = 15,
+	}
 };
 
 
