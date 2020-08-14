@@ -590,7 +590,7 @@ static struct class_attribute efuse_class_attrs[] = {
 
 	__ATTR(usid, 0700, show_usid, store_usid),
 
-	__ATTR(usid, 0700, show_f_serial, store_f_serial),
+	__ATTR(f_serial, 0700, show_f_serial, store_f_serial),
 
 	__ATTR_WO(amlogic_set),
 
