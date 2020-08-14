@@ -28,6 +28,8 @@
 #include <net/bluetooth/bluetooth.h>
 #include <net/bluetooth/hci_core.h>
 
+#include <linux/amlogic/efuse.h>
+
 #include "btbcm.h"
 
 #define VERSION "0.1"
@@ -391,6 +393,7 @@ int btbcm_finalize(struct hci_dev *hdev)
 	struct hci_rp_read_local_version *ver;
 	u16 subver, rev;
 	int err;
+        bdaddr_t * adrbuf;
 
 	/* Reset */
 	err = btbcm_reset(hdev);
@@ -412,6 +415,12 @@ int btbcm_finalize(struct hci_dev *hdev)
 		(subver & 0x00ff), rev & 0x0fff);
 
 	btbcm_check_bdaddr(hdev);
+
+        /* Read BDaddr from OTP */
+        adrbuf = kzalloc(sizeof(bdaddr_t), GFP_KERNEL);
+        if (efuse_user_attr_read("mac_bt", (char *)adrbuf) >= 6)
+                btbcm_set_bdaddr(hdev, adrbuf);
+        kfree(adrbuf);
 
 	set_bit(HCI_QUIRK_STRICT_DUPLICATE_FILTER, &hdev->quirks);
 
