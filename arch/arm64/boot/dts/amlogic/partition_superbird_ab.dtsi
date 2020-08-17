@@ -11,7 +11,7 @@
  */
 / {
 	partitions: partitions{
-		parts = <12>;
+		parts = <11>;
 		part-0 = <&logo>;
 		part-1 = <&dto>;
 		part-2 = <&dtbo_a>;
@@ -23,7 +23,6 @@
 		part-8 = <&misc>;
 		part-9 = <&settings>;
 		part-10 = <&data>;
-		part-11 = <&cache>;
 
 		logo:logo{
 			pname = "logo";
@@ -72,17 +71,11 @@
 		};
 		settings:settings{
 			pname = "settings";
-			size = <0x0 0x800000>;
+			size = <0x0 0x10000000>;
 			mask = <1>;
 		};
 		data:data{
 			pname = "data";
-			size = <0x0 0x20000000>;
-			mask = <1>;
-		};
-		cache:cache
-		{
-			pname = "cache";
 			size = <0xffffffff 0xffffffff>;
 			mask = <4>;
 		};
