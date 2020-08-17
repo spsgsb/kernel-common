@@ -71,9 +71,22 @@ unsigned int efuse_get_max_cmd;
 DEFINE_EFUEKEY_SHOW_ATTR(mac)
 DEFINE_EFUEKEY_SHOW_ATTR(mac_bt)
 DEFINE_EFUEKEY_SHOW_ATTR(mac_wifi)
-DEFINE_EFUEKEY_SHOW_ATTR(usid)
 DEFINE_EFUEKEY_SHOW_ATTR(f_serial)
 
+static ssize_t  show_usid(struct class *cla,
+                          struct class_attribute *attr,
+                          char *buf)
+{
+        ssize_t ret;
+
+        ret = efuse_user_attr_read("usid", buf);
+        if (strlen(buf) < (ret-1)) {
+                buf[strlen(buf)] = '\n';
+                buf[strlen(buf)+1] = '\0';
+                return strlen(buf);
+        }
+        return ret;
+}
 
 #define  DEFINE_EFUEKEY_STORE_ATTR(keyname)	\
 	static ssize_t  store_##keyname(struct class *cla, \
