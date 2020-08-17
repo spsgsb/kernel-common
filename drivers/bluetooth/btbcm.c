@@ -394,6 +394,8 @@ int btbcm_finalize(struct hci_dev *hdev)
 	u16 subver, rev;
 	int err;
         bdaddr_t * adrbuf;
+        int i;
+        __u8 x;
 
 	/* Reset */
 	err = btbcm_reset(hdev);
@@ -418,8 +420,17 @@ int btbcm_finalize(struct hci_dev *hdev)
 
         /* Read BDaddr from OTP */
         adrbuf = kzalloc(sizeof(bdaddr_t), GFP_KERNEL);
-        if (efuse_user_attr_read("mac_bt", (char *)adrbuf) >= 6)
+        if (efuse_user_attr_read("mac_bt", (char *)adrbuf) >= 6) {
+                /* swap byte order */
+                for (i = 0; i < 3; i++) {
+                        x = adrbuf->b[i];
+                        adrbuf->b[i] = adrbuf->b[5-i];
+                        adrbuf->b[5-i] = x;
+                }
                 btbcm_set_bdaddr(hdev, adrbuf);
+        }
+        else
+                BT_INFO("%s: btbcm no bdaddr", hdev->name);
         kfree(adrbuf);
 
 	set_bit(HCI_QUIRK_STRICT_DUPLICATE_FILTER, &hdev->quirks);
