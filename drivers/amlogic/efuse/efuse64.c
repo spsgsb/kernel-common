@@ -94,10 +94,7 @@ static ssize_t  show_usid(struct class *cla,
 						const char *buf,	\
 						size_t count)	\
 	{	\
-		ssize_t ret;	\
-		\
-		ret = efuse_user_attr_store(#keyname, buf, count); \
-		return ret; \
+		return -EPERM; \
 	}
 DEFINE_EFUEKEY_STORE_ATTR(mac)
 DEFINE_EFUEKEY_STORE_ATTR(mac_bt)
