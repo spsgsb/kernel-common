@@ -787,6 +787,7 @@ static struct l2cap_chan *a2mp_chan_open(struct l2cap_conn *conn, bool locked)
 	chan->mode = L2CAP_MODE_ERTM;
 
 	err = l2cap_ertm_init(chan);
+        BT_DBG("a2mp, l2cap_ertm_init %p, err %d", chan, err);
 	if (err < 0) {
 		l2cap_chan_del(chan, 0);
 		return NULL;
