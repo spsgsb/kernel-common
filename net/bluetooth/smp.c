@@ -3399,6 +3399,10 @@ int smp_register(struct hci_dev *hdev)
 		if (!hci_dev_test_flag(hdev, HCI_FORCE_BREDR_SMP))
 			return 0;
 	}
+	
+	/* SMP over BR/EDR is causing connection drops due to smp_timeout */
+	BT_INFO("Spotify: Disabling SMP over BR/EDR");
+	return 0;
 
 	if (WARN_ON(hdev->smp_bredr_data)) {
 		chan = hdev->smp_bredr_data;
