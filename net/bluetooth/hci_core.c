@@ -2955,8 +2955,8 @@ struct hci_dev *hci_alloc_dev(void)
 	hdev->cur_adv_instance = 0x00;
 	hdev->adv_instance_timeout = 0;
 
-	hdev->sniff_max_interval = 800;
-	hdev->sniff_min_interval = 80;
+	hdev->sniff_max_interval = 200;
+	hdev->sniff_min_interval = 15;
 
 	hdev->le_adv_channel_map = 0x07;
 	hdev->le_adv_min_interval = 0x0800;
