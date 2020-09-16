@@ -43,9 +43,7 @@
 #include "osd_backup.h"
 #ifdef CONFIG_AMLOGIC_MEDIA_RDMA
 #include <linux/amlogic/media/rdma/rdma_mgr.h>
-#ifdef CONFIG_AMLOGIC_MEDIA_ENHANCEMENT_VECM
 #include <linux/amlogic/media/amvecm/ve.h>
-#endif
 #endif
 #define RDMA_TRIGGER_LINE_INPUT (1 << 5)
 
