@@ -457,73 +457,6 @@
 		vm_id = <0>;
 	};
 
-	amvdec_656in {
-		/*bt656 gpio conflict with i2c0*/
-		compatible = "amlogic, amvdec_656in";
-		dev_name = "amvdec_656in";
-		status = "disabled";
-		reg = <0x0 0xffe02000 0x0 0x7c>;
-		clocks = <&clkc CLKID_BT656_COMP>,
-				<&clkc CLKID_BT656>;
-		clock-names = "cts_bt656_clk1",
-					"clk_gate_bt656";
-		/* bt656in1, bt656in2 */
-		bt656in1 {
-		bt656_id = <1>;
-		status = "disabled";
-		};
-	};
-
-	aml_cams {
-		compatible = "amlogic, cams_prober";
-		status = "disabled";
-		pinctrl-names="default";
-		pinctrl-0=<&cam_dvp_pins &gen_clk_ee_z>;
-		clocks = <&clkc CLKID_GEN_CLK>;
-		clock-names = "g12a_24m";
-		cam_0{
-			cam_name = "gc2145";
-			front_back = <0>;
-			/*u200 i2c2 gpio conflict with ethmac*/
-			camera-i2c-bus = <&i2c2>;
-			gpio_pwdn-gpios = <&gpio GPIOZ_2 GPIO_ACTIVE_HIGH>;
-			gpio_rst-gpios = <&gpio GPIOZ_12 GPIO_ACTIVE_HIGH>;
-			mirror_flip = <1>;
-			vertical_flip = <1>;
-			spread_spectrum = <0>;
-			bt_path = "gpio";
-			bt_path_count = <1>;
-			vdin_path = <0>;
-			status = "disabled";
-		};
-	};
-
-	/* Spotify disabled */
-	gpio_keypad{
-		compatible = "amlogic, gpio_keypad";
-		status = "disabled";
-		scan_period = <20>;
-		key_num = <1>;
-		key_name = "power";
-		key_code = <116>;
-		key-gpios = <&gpio_ao  GPIOAO_3  GPIO_ACTIVE_HIGH>;
-		detect_mode = <0>;/*0:polling mode, 1:irq mode*/
-	};
-
-	/* Spotify disabled */
-	adc_keypad {
-		compatible = "amlogic, adc_keypad";
-		status = "disabled";
-		key_name = "vol-", "vol+", "enter";
-		key_num = <3>;
-		io-channels = <&saradc SARADC_CH2>;
-		io-channel-names = "key-chan-2";
-		key_chan = <SARADC_CH2 SARADC_CH2 SARADC_CH2>;
-		key_code = <114 115 28>;
-		key_val = <143 266 389>; //val=voltage/1800mV*1023
-		key_tolerance = <40 40 40>;
-	};
-
 	unifykey{
 		compatible = "amlogic, unifykey";
 		status = "ok";
@@ -685,13 +618,6 @@
 		cm_en = <0>;/*1:enabel ;0:disable*/
 		/*0: 709/601  1: bt2020*/
 		tx_op_color_primary = <0>;
-	};
-
-	amdolby_vision {
-		compatible = "amlogic, dolby_vision_g12a";
-		dev_name = "aml_amdolby_vision_driver";
-		status = "disabled";
-		tv_mode = <0>;/*1:enabel ;0:disable*/
 	};
 
 	/* Audio Related start */
@@ -1085,53 +1011,6 @@
 		pinctrl-0 = <&tdmout_a &tdmin_a>;
 	};
 
-	/* copy a useless tdm to output for hdmi, no pinmux */
-	aml_i2s2hdmi: i2s2hdmi {
-		compatible = "amlogic, g12a-snd-tdmc";
-		#sound-dai-cells = <0>;
-		dai-tdm-lane-slot-mask-out = <1 1 1 1>;
-		dai-tdm-clk-sel = <2>;
-		clocks = <&clkaudio CLKID_AUDIO_MCLK_C
-				&clkc CLKID_MPLL2>;
-		clock-names = "mclk", "clk_srcpll";
-
-		i2s2hdmi = <1>;
-
-		status = "disabled";
-	};
-
-	aml_spdif: spdif {
-		compatible = "amlogic, g12a-snd-spdif-a";
-		#sound-dai-cells = <0>;
-		clocks = <&clkc CLKID_MPLL0
-				&clkc CLKID_FCLK_DIV4
-				&clkaudio CLKID_AUDIO_SPDIFIN
-				&clkaudio CLKID_AUDIO_SPDIFOUT
-				&clkaudio CLKID_AUDIO_SPDIFIN_CTRL
-				&clkaudio CLKID_AUDIO_SPDIFOUT_CTRL>;
-		clock-names = "sysclk", "fixed_clk", "gate_spdifin",
-				"gate_spdifout", "clk_spdifin", "clk_spdifout";
-		interrupts =
-				<GIC_SPI 151 IRQ_TYPE_EDGE_RISING>;
-
-		interrupt-names = "irq_spdifin";
-		pinctrl-names = "spdif_pins",
-					"spdif_pins_mute";
-		pinctrl-0 = <&spdifout &spdifin>;
-		pinctrl-1 = <&spdifout_a_mute>;
-		status = "disabled";
-	};
-	aml_spdif_b: spdif_b {
-		compatible = "amlogic, g12a-snd-spdif-b";
-		#sound-dai-cells = <0>;
-		clocks = <&clkc CLKID_MPLL0 /*CLKID_HIFI_PLL*/
-				&clkaudio CLKID_AUDIO_SPDIFOUTB
-				&clkaudio CLKID_AUDIO_SPDIFOUTB_CTRL>;
-		clock-names = "sysclk",
-				"gate_spdifout", "clk_spdifout";
-		status = "okay";
-	};
-
 	aml_pdm: pdm {
 		compatible = "amlogic, g12a-snd-pdm";
 		#sound-dai-cells = <0>;
@@ -1206,29 +1085,6 @@
 		 */
 		resample_module = <4>;
 		status = "okay";
-	};
-	aml_pwrdet: pwrdet {
-		compatible = "amlogic, g12a-power-detect";
-
-		interrupts = <GIC_SPI 155 IRQ_TYPE_EDGE_RISING>;
-		interrupt-names = "pwrdet_irq";
-
-		/* pwrdet source sel
-		 * 7: loopback;
-		 * 6: tdmin_lb;
-		 * 5: reserved;
-		 * 4: pdmin;
-		 * 3: spdifin;
-		 * 2: tdmin_c;
-		 * 1: tdmin_b;
-		 * 0: tdmin_a;
-		 */
-		pwrdet_src = <4>;
-
-		hi_th = <0x70000>;
-		lo_th = <0x16000>;
-
-		status = "disabled";
 	};
 }; /* end of audiobus */
 
@@ -1546,68 +1402,6 @@
 	};
 };
 
-&sd_emmc_b1 {
-	status = "disabled";
-	sd {
-		caps = "MMC_CAP_4_BIT_DATA",
-			 "MMC_CAP_MMC_HIGHSPEED",
-			 "MMC_CAP_SD_HIGHSPEED";
-		f_min = <400000>;
-		f_max = <50000000>;
-	};
-};
-
-&sd_emmc_b2 {
-	status = "disabled";
-	sd {
-		caps = "MMC_CAP_4_BIT_DATA",
-			 "MMC_CAP_MMC_HIGHSPEED",
-			 "MMC_CAP_SD_HIGHSPEED";
-
-		f_min = <400000>;
-		f_max = <50000000>;
-	};
-
-	sdio {
-		caps = "MMC_CAP_4_BIT_DATA",
-			 "MMC_CAP_MMC_HIGHSPEED",
-			 "MMC_CAP_SD_HIGHSPEED",
-			 "MMC_CAP_NONREMOVABLE",
-			 "MMC_CAP_UHS_SDR12",
-			 "MMC_CAP_UHS_SDR25",
-			 "MMC_CAP_UHS_SDR50",
-			 "MMC_CAP_UHS_SDR104",
-			 "MMC_PM_KEEP_POWER",
-			 "MMC_CAP_SDIO_IRQ";
-
-		f_min = <400000>;
-		f_max = <200000000>;
-	};
-};
-
-&sd_emmc_a {
-	status = "disabled";
-	sdio {
-		caps = "MMC_CAP_4_BIT_DATA",
-			 "MMC_CAP_MMC_HIGHSPEED",
-			 "MMC_CAP_SD_HIGHSPEED",
-			 "MMC_CAP_NONREMOVABLE",
-			 "MMC_CAP_UHS_SDR12",
-			 "MMC_CAP_UHS_SDR25",
-			 "MMC_CAP_UHS_SDR50",
-			 "MMC_CAP_UHS_SDR104",
-			 "MMC_PM_KEEP_POWER",
-			 "MMC_CAP_SDIO_IRQ";
-		f_min = <400000>;
-		f_max = <200000000>;
-	};
-};
-
-&pcie_A {
-	reset-gpio = <&gpio GPIOX_7 GPIO_ACTIVE_HIGH>;
-	status = "disable";
-};
-
 &aobus{
 	uart_AO: serial@3000 {
 		compatible = "amlogic, meson-uart";
@@ -1635,22 +1429,6 @@
 &gpio_intc {
 	 compatible = "amlogic,meson-gpio-intc-ext",
 					"amlogic,meson-g12a-gpio-intc";
-};
-
-&remote {
-	status = "disabled";
-};
-
-&custom_maps {
-	status = "disabled";
-};
-
-&amhdmitx {
-	status = "disabled";
-};
-
-&aocec {
-	status = "disabled";
 };
 
 &efuse {
