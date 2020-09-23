@@ -3507,10 +3507,10 @@ static int __init test_debug_key(void)
 	if (!generate_ecdh_keys(pk, sk))
 		return -EINVAL;
 
-	if (memcmp(sk, debug_sk, 32))
+	if (crypto_memneq(sk, debug_sk, 32))
 		return -EINVAL;
 
-	if (memcmp(pk, debug_pk, 64))
+	if (crypto_memneq(pk, debug_pk, 64))
 		return -EINVAL;
 
 	return 0;
