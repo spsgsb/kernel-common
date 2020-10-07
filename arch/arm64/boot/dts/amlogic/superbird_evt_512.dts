@@ -957,7 +957,7 @@
 		reg = <0x2e>;
 		reset-gpio = <&gpio GPIOZ_3 GPIO_ACTIVE_HIGH>;
 		irq-gpio = <&gpio GPIOZ_4 GPIO_ACTIVE_HIGH>;
-		polling-mode = <1>; /*1:polling mode, 0:irq mode*/
+		polling-mode = <0>; /*1:polling mode, 0:irq mode*/
 		TP_MAX_X = <480>;
 		TP_MAX_Y = <800>;
 	};
