@@ -1281,6 +1281,7 @@
 			"pdm_din1_a",
 			"pdm_dclk_a";
 			function = "pdm";
+			drive-strength = <1>;
 		};
 	};
 
