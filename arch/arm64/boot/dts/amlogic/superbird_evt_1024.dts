@@ -1296,6 +1296,7 @@
 		mux { /* GPIOZ_0 GPIOZ_1 */
 			groups = "i2c0_sda_z0", "i2c0_sck_z1";
 			function = "i2c0";
+                        drive-strength = "1";
 		};
 	};
 
@@ -1303,6 +1304,7 @@
 		mux {
 			groups = "GPIOZ_3", "GPIOZ_4";
 			function = "gpio_periphs";
+                        drive-strength = "1";
 		};
 	};
 
@@ -1331,6 +1333,7 @@
 			pins = "GPIOZ_5";
 			function = "gpio_periphs";
 			bias-disable;
+                        drive-strength = "1";
 		};
 	};
 
@@ -1354,6 +1357,7 @@
 		pins = "GPIOX_7";
 		bias-disable;
 		output-enable;
+                drive-strength = "1";
 	};
 
 	spotify_disabled_pins_c: spotify_disabled_pins_c {
@@ -1407,6 +1411,7 @@
 			pins = "GPIOZ_3";
 			output-low;
 			bias-pull-down;
+                        drive-strength = "1";
 		};
 	};
 
@@ -1415,6 +1420,7 @@
 			pins = "GPIOZ_3";
 			output-high;
 			bias-pull-up;
+                        drive-strength = "1";
 		};
 	};
 
@@ -1444,6 +1450,7 @@
 			function = "gpio_periphs";
 			bias-pull-up;
 			output-high;
+                        drive-strength = "1";
 		};
 	};
 
