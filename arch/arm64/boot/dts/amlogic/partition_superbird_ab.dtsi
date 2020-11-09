@@ -11,18 +11,20 @@
  */
 / {
 	partitions: partitions{
-		parts = <11>;
+		parts = <13>;
 		part-0 = <&logo>;
 		part-1 = <&dto>;
 		part-2 = <&dtbo_a>;
 		part-3 = <&dtbo_b>;
-		part-4 = <&boot_a>;
-		part-5 = <&boot_b>;
-		part-6 = <&system_a>;
-		part-7 = <&system_b>;
-		part-8 = <&misc>;
-		part-9 = <&settings>;
-		part-10 = <&data>;
+		part-4 = <&vbmeta_a>;
+		part-5 = <&vbmeta_b>;
+		part-6 = <&boot_a>;
+		part-7 = <&boot_b>;
+		part-8 = <&system_a>;
+		part-9 = <&system_b>;
+		part-10 = <&misc>;
+		part-11 = <&settings>;
+		part-12 = <&data>;
 
 		logo:logo{
 			pname = "logo";
@@ -42,6 +44,16 @@
 		dtbo_b:dtbo_b{
 			pname = "dtbo_b";
 			size = <0x0 0x800000>;
+			mask = <1>;
+		};
+		vbmeta_a:vbmeta_a{
+			pname = "vbmeta_a";
+			size = <0x0 0x100000>;
+			mask = <1>;
+		};
+		vbmeta_b:vbmeta_b{
+			pname = "vbmeta_b";
+			size = <0x0 0x100000>;
 			mask = <1>;
 		};
 		boot_a:boot_a{
