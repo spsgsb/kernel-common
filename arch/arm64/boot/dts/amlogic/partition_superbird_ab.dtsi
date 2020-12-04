@@ -56,12 +56,12 @@
 		};
 		system_a:system_a{
 			pname = "system_a";
-			size = <0x0 0x0x2040B000>;
+			size = <0x0 0x2040B000>;
 			mask = <1>;
 		};
 		system_b:system_b{
 			pname = "system_b";
-			size = <0x0 0x0x2040B000>;
+			size = <0x0 0x2040B000>;
 			mask = <1>;
 		};
 		misc:misc{
