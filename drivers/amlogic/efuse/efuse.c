@@ -370,8 +370,6 @@ error_exit:
 		return ret; \
 	}
 
-DEFINE_EFUE_SHOW_ATTR(version)
-DEFINE_EFUE_SHOW_ATTR(mac)
 DEFINE_EFUE_SHOW_ATTR(mac_bt)
 DEFINE_EFUE_SHOW_ATTR(mac_wifi)
 DEFINE_EFUE_SHOW_ATTR(usid)
@@ -383,31 +381,26 @@ DEFINE_EFUE_SHOW_ATTR(f_serial)
 						const char *buf,	\
 						size_t count)	\
 	{	\
-		ssize_t ret;	\
-		\
-		ret = efuse_attr_store(#name, buf, count); \
-		return ret; \
+		return -EPERM; \
 	}
 #ifdef CONFIG_AMLOGIC_EFUSE_WRITE_VERSION_PERMIT
 DEFINE_EFUE_STORE_ATTR(version)
 #endif
-//DEFINE_EFUE_STORE_ATTR(mac)
-//DEFINE_EFUE_STORE_ATTR(mac_bt)
-//DEFINE_EFUE_STORE_ATTR(mac_wifi)
+DEFINE_EFUE_STORE_ATTR(mac_bt)
+DEFINE_EFUE_STORE_ATTR(mac_wifi)
 DEFINE_EFUE_STORE_ATTR(usid)
 DEFINE_EFUE_STORE_ATTR(f_serial)
 
 static struct class_attribute efuse_class_attrs[] = {
 #ifdef CONFIG_AMLOGIC_EFUSE_WRITE_VERSION_PERMIT
-	__ATTR(version, 0700, show_version, store_version),
+	__ATTR(version, 0600, show_version, store_version),
 #else
-	__ATTR(version, 0500, show_version, NULL),
+	__ATTR(version, 0400, show_version, NULL),
 #endif
-	__ATTR(mac, 0500, show_mac, NULL),
-	__ATTR(mac_bt, 0500, show_mac_bt, NULL),
-	__ATTR(mac_wifi, 0500, show_mac_wifi, NULL),
-	__ATTR(usid, 0700, show_usid, store_usid),
-	__ATTR(usid, 0700, show_f_serial, store_f_serial),
+	__ATTR(mac_bt, 0444, show_mac_bt, NULL),
+	__ATTR(mac_wifi, 0400, show_mac_wifi, NULL),
+	__ATTR(usid, 0444, show_usid, store_usid),
+	__ATTR(f_serial, 0400, show_f_serial, store_f_serial),
 	__ATTR_NULL
 
 };
