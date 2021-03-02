@@ -68,7 +68,6 @@ unsigned int efuse_get_max_cmd;
 		ret = efuse_user_attr_show(#keyname, buf); \
 		return ret; \
 	}
-DEFINE_EFUEKEY_SHOW_ATTR(mac)
 DEFINE_EFUEKEY_SHOW_ATTR(mac_bt)
 DEFINE_EFUEKEY_SHOW_ATTR(mac_wifi)
 DEFINE_EFUEKEY_SHOW_ATTR(f_serial)
@@ -96,7 +95,7 @@ static ssize_t  show_usid(struct class *cla,
 	{	\
 		return -EPERM; \
 	}
-DEFINE_EFUEKEY_STORE_ATTR(mac)
+//DEFINE_EFUEKEY_STORE_ATTR(mac)
 DEFINE_EFUEKEY_STORE_ATTR(mac_bt)
 DEFINE_EFUEKEY_STORE_ATTR(mac_wifi)
 DEFINE_EFUEKEY_STORE_ATTR(usid)
@@ -585,14 +584,12 @@ static struct class_attribute efuse_class_attrs[] = {
 
 	#ifndef EFUSE_READ_ONLY
 	/*make the efuse can not be write through sysfs */
-	__ATTR(userdata, 0700, userdata_show, userdata_write),
+	__ATTR(userdata, 0600, userdata_show, userdata_write),
 
 	#else
 	__ATTR_RO(userdata),
 
 	#endif
-
-	__ATTR(mac, 0400, show_mac, store_mac),
 
 	__ATTR(mac_bt, 0444, show_mac_bt, store_mac_bt),
 

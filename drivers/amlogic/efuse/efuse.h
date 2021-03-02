@@ -19,7 +19,7 @@
 #define __EFUSE_H
 
 /* #define EFUSE_DEBUG */
-/*#define EFUSE_READ_ONLY			1*/
+#define EFUSE_READ_ONLY			1
 
 /* #define EFUSE_NONE_ID			0 */
 #define EFUSE_VERSION_ID		1
