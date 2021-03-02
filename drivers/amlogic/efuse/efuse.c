@@ -403,11 +403,11 @@ static struct class_attribute efuse_class_attrs[] = {
 #else
 	__ATTR(version, 0500, show_version, NULL),
 #endif
-	__ATTR(mac, 0500, show_mac, NULL),
-	__ATTR(mac_bt, 0500, show_mac_bt, NULL),
-	__ATTR(mac_wifi, 0500, show_mac_wifi, NULL),
-	__ATTR(usid, 0700, show_usid, store_usid),
-	__ATTR(usid, 0700, show_f_serial, store_f_serial),
+	__ATTR(mac, 0400, show_mac, NULL),
+	__ATTR(mac_bt, 0444, show_mac_bt, NULL),
+	__ATTR(mac_wifi, 0400, show_mac_wifi, NULL),
+	__ATTR(usid, 0444, show_usid, store_usid),
+	__ATTR(usid, 0400, show_f_serial, store_f_serial),
 	__ATTR_NULL
 
 };

@@ -592,15 +592,15 @@ static struct class_attribute efuse_class_attrs[] = {
 
 	#endif
 
-	__ATTR(mac, 0700, show_mac, store_mac),
+	__ATTR(mac, 0400, show_mac, store_mac),
 
-	__ATTR(mac_bt, 0700, show_mac_bt, store_mac_bt),
+	__ATTR(mac_bt, 0444, show_mac_bt, store_mac_bt),
 
-	__ATTR(mac_wifi, 0700, show_mac_wifi, store_mac_wifi),
+	__ATTR(mac_wifi, 0400, show_mac_wifi, store_mac_wifi),
 
-	__ATTR(usid, 0700, show_usid, store_usid),
+	__ATTR(usid, 0444, show_usid, store_usid),
 
-	__ATTR(f_serial, 0700, show_f_serial, store_f_serial),
+	__ATTR(f_serial, 0400, show_f_serial, store_f_serial),
 
 	__ATTR_WO(amlogic_set),
 
