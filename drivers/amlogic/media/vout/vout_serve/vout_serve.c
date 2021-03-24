@@ -309,6 +309,7 @@ static int set_vout_init_mode(void)
 		VOUTERR("init mode %s set error\n", init_mode_str);
 	else {
 		snprintf(vout_mode, VMODE_NAME_LEN_MAX, "%s", init_mode_str);
+		vout_notifier_call_chain(VOUT_EVENT_MODE_CHANGE, &vmode);
 		VOUTPR("init mode %s set ok\n", vout_mode);
 	}
 

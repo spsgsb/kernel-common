@@ -2133,7 +2133,7 @@ static void __exit aml_lcd_extern_exit(void)
 	platform_driver_unregister(&aml_lcd_extern_driver);
 }
 
-late_initcall(aml_lcd_extern_init);
+subsys_initcall(aml_lcd_extern_init);
 module_exit(aml_lcd_extern_exit);
 
 MODULE_AUTHOR("AMLOGIC");
