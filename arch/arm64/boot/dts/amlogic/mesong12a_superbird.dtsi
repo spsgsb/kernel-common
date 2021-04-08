@@ -1067,7 +1067,7 @@
 			0 89 1>;
 		interrupt-names = "viu-vsync", "viu2-vsync", "rdma";
 		/* uboot logo,fb0/fb1 memory size,if afbcd fb0=0x01851000*/
-		display_mode_default = "panel";
+		display_mode_default = "1080p60hz";
 		scale_mode = <1>;
 		/** 0:VPU free scale 1:OSD free scale 2:OSD super scale */
 		display_size_default = <480 800 480 1600 24>;
