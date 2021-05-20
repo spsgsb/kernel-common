@@ -64,6 +64,8 @@ extern int tlsx6x_update_running_cfg(u16* ptcfg);
 extern int tlsx6x_update_burn_cfg(u16* ptcfg);
 extern void tlsc6x_data_crash_deal(void);
 
+extern int tlsc6x_flash_firmware(u8* firmware, size_t firmware_len);
+
 extern int tlsc6x_i2c_read_nolock(struct i2c_client *client, char *writebuf,int writelen, char *readbuf, int readlen);
 extern int tlsc6x_i2c_write_nolock(struct i2c_client *client, char *writebuf, int writelen);
 

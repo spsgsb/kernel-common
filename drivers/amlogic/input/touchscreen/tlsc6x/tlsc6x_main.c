@@ -35,6 +35,8 @@
 
 #include <linux/hrtimer.h>
 
+#include <linux/sysfs.h>
+
 #if defined(CONFIG_ADF)
 #include <linux/notifier.h>
 #include <video/adf_notifier.h>
@@ -1233,6 +1235,73 @@ static ssize_t tlsc6x_tp_version_show(struct device *dev,
 
 static DEVICE_ATTR(tp_version, 0444, tlsc6x_tp_version_show, NULL);
 
+static u8* firmware = NULL;
+static size_t firmware_len = 0;
+static ssize_t tlsc6x_tp_flash_store(struct file *filep, struct kobject *kobj, struct bin_attribute *bin_attr, char *buffer, loff_t pos, size_t size)
+{
+    int result;
+
+    if (firmware == NULL) {
+        struct tlsc6x_updfile_header* header = (struct tlsc6x_updfile_header*)buffer;
+
+        if (header->sig != 0x43534843) {
+            TLSC_ERROR("Invalid signature. Expected 0x43534843, got 0x%x\n", header->sig);
+            result = -EPERM;
+            goto error;
+        }
+        TLSC_INFO("Signature matched...\n");
+
+        firmware_len =
+            sizeof(struct tlsc6x_updfile_header)
+            + (header->n_match * 4)
+            + header->len_boot
+            + header->len_cfg;
+
+        TLSC_INFO("N_match length is %d bytes...\n", (header->n_match * 4));
+        TLSC_INFO("Boot length is %d bytes...\n", header->len_boot);
+        TLSC_INFO("Config length is %d bytes...\n", header->len_cfg);
+        TLSC_INFO("Expected firmware length is %ld bytes...\n", firmware_len);
+
+        firmware = kzalloc(firmware_len, GFP_KERNEL);
+    }
+
+    if (firmware == NULL || pos > firmware_len) {
+        TLSC_ERROR("No memory!\n");
+        result = -ENOMEM;
+        goto error;
+    }
+
+    memcpy(firmware + pos, buffer, size);
+    TLSC_INFO("Loaded %lld bytes...\n", pos + size);
+
+    if (pos + size == firmware_len) {
+        TLSC_INFO("Flashing touch IC firmware...\n");
+
+        result = tlsc6x_flash_firmware(firmware, firmware_len);
+        if (result != 0)
+            goto error;
+
+        TLSC_INFO("Done flashing touch IC firmware!\n");
+        firmware_len = 0;
+        kfree(firmware);
+        firmware = NULL;
+    }
+
+    return size;
+
+error:
+    TLSC_ERROR("Error flashing firmware!\n");
+    if (firmware_len)
+        firmware_len = 0;
+    if (firmware != NULL) {
+        kfree(firmware);
+        firmware = NULL;
+    }
+    return result;
+}
+
+static BIN_ATTR(tp_flash, 0200, NULL, tlsc6x_tp_flash_store, 0);
+
 static int tlsc6x_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {
     int err = 0;
@@ -1460,6 +1529,13 @@ static int tlsc6x_probe(struct i2c_client *client, const struct i2c_device_id *i
 	if (device_create_file(tls6x_touchscreen_cmd_dev, &dev_attr_tp_version) < 0) {
 			TLSC_ERROR("Failed to create device file(%s)!\n", dev_attr_tp_version.attr.name);
 	}
+
+    //flash
+    TLSC_INFO("Creating firmware upload device file...");
+    if (device_create_bin_file(tls6x_touchscreen_cmd_dev, &bin_attr_tp_flash) < 0) {
+        TLSC_ERROR("Failed to create firmware upload device file!\n");
+    }
+    TLSC_INFO("Done creating firmware upload device file...");
 
 	TLSC_INFO("%s: end of probe \n",__func__);
 
