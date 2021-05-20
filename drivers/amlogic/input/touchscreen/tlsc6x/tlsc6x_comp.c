@@ -1279,6 +1279,12 @@ int tlsc6x_update_compat_ctl(u8 *pupd, int len)
 	return 0;
 }
 
+int tlsc6x_flash_firmware(u8 *firmware, size_t firmware_len)
+{
+    TLSC_FUNC_ENTER();
+    return tlsc6x_update_compat_ctl(firmware, firmware_len);
+}
+
 int tlsc6x_auto_upgrade_buidin(void)
 {
 	u8 *fupd = fw_file_tlsc6x;
