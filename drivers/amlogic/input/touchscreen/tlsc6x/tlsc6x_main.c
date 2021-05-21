@@ -1244,11 +1244,11 @@ static ssize_t tlsc6x_tp_flash_store(struct file *filep, struct kobject *kobj, s
     if (firmware == NULL) {
         struct tlsc6x_updfile_header* header = (struct tlsc6x_updfile_header*)buffer;
 
-	if (size < sizeof(struct tlsc6x_updfile_header)) {
-	    TLSC_ERROR("Firmware too short\n");
-	    result = -EPERM;
-	    goto error;
-	}
+        if (size < sizeof(struct tlsc6x_updfile_header)) {
+            TLSC_ERROR("Firmware too short\n");
+            result = -EPERM;
+            goto error;
+        }
 
         if (header->sig != 0x43534843) {
             TLSC_ERROR("Invalid signature. Expected 0x43534843, got 0x%x\n", header->sig);
