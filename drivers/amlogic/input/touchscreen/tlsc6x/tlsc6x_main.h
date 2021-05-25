@@ -61,7 +61,7 @@ extern int tlsc6x_tp_dect(struct i2c_client *client);
 extern int tlsc6x_auto_upgrade_buidin(void);
 extern int tlsc6x_load_gesture_binlib(void);
 extern int tlsx6x_update_running_cfg(u16* ptcfg);
-extern int tlsx6x_update_burn_cfg(u16* ptcfg);
+extern int tlsx6x_update_burn_cfg(u16* ptcfg, u8 ignore_version_check);
 extern void tlsc6x_data_crash_deal(void);
 
 extern int tlsc6x_flash_firmware(u8* firmware, size_t firmware_len);

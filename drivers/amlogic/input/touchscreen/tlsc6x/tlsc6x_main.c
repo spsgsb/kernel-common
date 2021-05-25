@@ -1287,6 +1287,8 @@ static ssize_t tlsc6x_tp_flash_store(struct file *filep, struct kobject *kobj, s
         if (result != 0)
             goto error;
 
+        tlsc6x_tpd_reset();
+
         TLSC_INFO("Done flashing touch IC firmware!\n");
         firmware_len = 0;
         kfree(firmware);
@@ -1537,11 +1539,11 @@ static int tlsc6x_probe(struct i2c_client *client, const struct i2c_device_id *i
 	}
 
     //flash
-    TLSC_INFO("Creating firmware upload device file...");
+    TLSC_INFO("Creating firmware upload device file...\n");
     if (device_create_bin_file(tls6x_touchscreen_cmd_dev, &bin_attr_tp_flash) < 0) {
         TLSC_ERROR("Failed to create firmware upload device file!\n");
     }
-    TLSC_INFO("Done creating firmware upload device file...");
+    TLSC_INFO("Done creating firmware upload device file...\n");
 
 	TLSC_INFO("%s: end of probe \n",__func__);
 

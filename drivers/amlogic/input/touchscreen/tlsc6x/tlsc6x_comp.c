@@ -625,7 +625,7 @@ static int tlsc6x_tpcfg_ver_comp(unsigned short * ptcfg)
 
 	vnow = (g_tlsc6x_cfg_ver >> 26) & 0x3f;
 	vbuild = (u32tmp >> 26) & 0x3f;
-	TLSC_INFO("vnow: 0x%x,vbuild: 0x%x", vnow, vbuild);
+	TLSC_INFO("vnow: 0x%x,vbuild: 0x%x\n", vnow, vbuild);
 	if (vbuild <= vnow) {
 		return 0;
 	}
@@ -717,10 +717,10 @@ static int find_last_valid_burn_cfg(u16* ptcfg)
 
 }
 
-int tlsx6x_update_fcomp_cfg(u16 *ptcfg)
+int tlsx6x_update_fcomp_cfg(u16 *ptcfg, u8 ignore_version_check)
 {
 	TLSC_FUNC_ENTER();
-	if (tlsc6x_tpcfg_ver_comp_weak(ptcfg) == 0) {
+	if (ignore_version_check == 0 && tlsc6x_tpcfg_ver_comp_weak(ptcfg) == 0) {
 		TLSC_ERROR("update error:version error!\n");
 		return -EPERM;
 	}
@@ -819,7 +819,7 @@ int tlsc6x_update_f_combboot(u8* pdata, u16 len)
 		}
 		if ((ret == 0) && (len >= 204)) {
 			memcpy(tl_buf_tmpcfg, pdata, 204);
-			ret = tlsx6x_update_burn_cfg(tl_buf_tmpcfg);
+			ret = tlsx6x_update_burn_cfg(tl_buf_tmpcfg, 0);
 		}
 		return ret;
 	}
@@ -832,23 +832,23 @@ int tlsc6x_update_f_combboot(u8* pdata, u16 len)
 
 	if ((ret == 0) && (len >= 204)) {
 		memcpy(tl_buf_tmpcfg, pdata, 204);
-		ret = tlsx6x_update_fcomp_cfg(tl_buf_tmpcfg);
+		ret = tlsx6x_update_fcomp_cfg(tl_buf_tmpcfg, 0);
 	}
 
     return ret;
     
 }
 
-int tlsx6x_update_burn_cfg(u16* ptcfg)
+int tlsx6x_update_burn_cfg(u16* ptcfg, u8 ignore_version_check)
 {
     u16 addr, check;
 
 	TLSC_FUNC_ENTER();
 	if (g_mccode == 1) {
-		return tlsx6x_update_fcomp_cfg(ptcfg);
+		return tlsx6x_update_fcomp_cfg(ptcfg, ignore_version_check);
 	}
 
-	if (tlsc6x_tpcfg_ver_comp_weak(ptcfg) == 0) {
+	if (ignore_version_check == 0 && tlsc6x_tpcfg_ver_comp_weak(ptcfg) == 0) {
 		TLSC_ERROR("update error:version error!\n");
 		return -EPERM;
 	}
@@ -1120,7 +1120,7 @@ static int tlsx6x_3536find_lastvaild_ver(void)
 }
 
 
-static int tlsc6x_upgrade_romcfg_array(unsigned short *parray, unsigned int cfg_num)
+static int tlsc6x_upgrade_romcfg_array(unsigned short *parray, unsigned int cfg_num, u8 ignore_version_check)
 {
 	unsigned int k;
 
@@ -1135,7 +1135,7 @@ static int tlsc6x_upgrade_romcfg_array(unsigned short *parray, unsigned int cfg_
 	new_idx_active = -1;
 
 	for (k = 0; k < cfg_num; k++) {
-		if (tlsc6x_tpcfg_ver_comp(parray) == 1) {
+		if (ignore_version_check == 1 || tlsc6x_tpcfg_ver_comp(parray) == 1) {
 			new_idx_active = k;
 			TLSC_INFO("%s, new_idx_active is %d.\n", __func__, new_idx_active);
 			break;
@@ -1143,7 +1143,7 @@ static int tlsc6x_upgrade_romcfg_array(unsigned short *parray, unsigned int cfg_
 		parray = parray + 102;
 	}
 
-	if (new_idx_active < 0) {
+	if (ignore_version_check == 0 && new_idx_active < 0) {
 		TLSC_INFO("auto update skip:no updated version!\n");
 		return -EPERM;
 	}
@@ -1153,7 +1153,7 @@ static int tlsc6x_upgrade_romcfg_array(unsigned short *parray, unsigned int cfg_
 		return -EPERM;
 	}
 
-	if (tlsx6x_update_burn_cfg(parray) == 0) {
+	if (tlsx6x_update_burn_cfg(parray, ignore_version_check) == 0) {
 		TLSC_INFO("update pass!\n");
 	} else {
 		TLSC_ERROR("update fail!\n");
@@ -1180,14 +1180,14 @@ static int tlsc6x_boot_ver_comp(unsigned int ver)
 	return 0;
 }
 
-static int tlsc6x_3536boot_update(u8 *pdata, u16 boot_len)
+static int tlsc6x_3536boot_update(u8 *pdata, u16 boot_len, u8 ignore_version_check)
 {
 	unsigned int ver = 0;
 
 	ver = pdata[5];
 	ver = (ver<<8) + pdata[4];
          TLSC_FUNC_ENTER();
-	if (tlsc6x_boot_ver_comp(ver) == 0) {
+	if (ignore_version_check == 0 && tlsc6x_boot_ver_comp(ver) == 0) {
 		TLSC_INFO("3536 boot not need update!\n");
 		return 0;
 	}
@@ -1195,14 +1195,14 @@ static int tlsc6x_3536boot_update(u8 *pdata, u16 boot_len)
 	return  tlsx6x_update_fcomp_boot(pdata, boot_len);
 }
 
-static int tlsc6x_3535boot_update(u8 *pdata, u16 boot_len)
+static int tlsc6x_3535boot_update(u8 *pdata, u16 boot_len, u8 ignore_version_check)
 {
 	unsigned int ver = 0;
 
 	ver = pdata[5];
 	ver = (ver<<8) + pdata[4];
 
-	if (tlsc6x_boot_ver_comp(ver) == 0) {
+	if (ignore_version_check == 0 && tlsc6x_boot_ver_comp(ver) == 0) {
 		TLSC_INFO("3535 boot not need update!\n");
 		return 0;
 	}
@@ -1214,18 +1214,18 @@ static int tlsc6x_3535boot_update(u8 *pdata, u16 boot_len)
 
 
 
-static int tlsc6x_boot_update(u8 *pdata, u16 boot_len)
+static int tlsc6x_boot_update(u8 *pdata, u16 boot_len, u8 ignore_version_check)
 {
         TLSC_FUNC_ENTER();	
 	if (g_mccode == 0) {
-		return tlsc6x_3535boot_update(pdata, boot_len);
+		return tlsc6x_3535boot_update(pdata, boot_len, ignore_version_check);
 	}
 
-	return tlsc6x_3536boot_update(pdata, boot_len);
+	return tlsc6x_3536boot_update(pdata, boot_len, ignore_version_check);
 }
 
 
-int tlsc6x_update_compat_ctl(u8 *pupd, int len)
+int tlsc6x_update_compat_ctl(u8 *pupd, int len, u8 ignore_version_check)
 {
 	u32 k;
 	u32 n;
@@ -1260,7 +1260,7 @@ int tlsc6x_update_compat_ctl(u8 *pupd, int len)
 	}
 
 	if (n != 0) {
-		tlsc6x_upgrade_romcfg_array((u16 *) (pupd + offset), n);
+		tlsc6x_upgrade_romcfg_array((u16 *) (pupd + offset), n, ignore_version_check);
 	}
 
 	n = upd_header->n_match;
@@ -1269,7 +1269,7 @@ int tlsc6x_update_compat_ctl(u8 *pupd, int len)
 		offset = offset + upd_header->len_cfg;
 		for (k=0; k < n; k++) {
 			if (vlist[k] == (g_tlsc6x_cfg_ver & 0xffffff)) {
-				tlsc6x_boot_update((pupd + offset), upd_header->len_boot);
+				tlsc6x_boot_update((pupd + offset), upd_header->len_boot, ignore_version_check);
 				
 				break;
 			}
@@ -1282,21 +1282,21 @@ int tlsc6x_update_compat_ctl(u8 *pupd, int len)
 int tlsc6x_flash_firmware(u8 *firmware, size_t firmware_len)
 {
     TLSC_FUNC_ENTER();
-    return tlsc6x_update_compat_ctl(firmware, firmware_len);
+    return tlsc6x_update_compat_ctl(firmware, firmware_len, 1);
 }
 
 int tlsc6x_auto_upgrade_buidin(void)
 {
 	u8 *fupd = fw_file_tlsc6x;
 	TLSC_FUNC_ENTER();
-	return tlsc6x_update_compat_ctl((u8 *) fupd, fw_size);
+	return tlsc6x_update_compat_ctl((u8 *) fupd, fw_size, 0);
 }
 
 void tlsc6x_do_update_ifneed(void)
 {
 	u8 *fupd = fw_file_tlsc6x;
 	TLSC_FUNC_ENTER();
-	tlsc6x_update_compat_ctl((u8 *) fupd, fw_size);
+	tlsc6x_update_compat_ctl((u8 *) fupd, fw_size, 0);
 
 }
 
