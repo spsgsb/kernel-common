@@ -882,11 +882,11 @@ int tlsx6x_update_burn_cfg(u16* ptcfg, u8 ignore_version_check)
 	}
 
 	if (tlsc6x_write_burn_space((unsigned char *)ptcfg, addr, 204)) {
-		TLSC_ERROR("update fail!\n");
+		TLSC_ERROR("Flashing configuration failed! (tlsc6x_write_burn_space)\n");
 		return -EPERM;
 	}
 
-	TLSC_INFO("update pass!\n");
+	TLSC_INFO("Flashing configuration complete!\n");
 
 	memcpy(tl_target_cfg, ptcfg, 204);
 	g_tlsc6x_cfg_ver = (ptcfg[1] << 16) | ptcfg[0];
@@ -1154,9 +1154,9 @@ static int tlsc6x_upgrade_romcfg_array(unsigned short *parray, unsigned int cfg_
 	}
 
 	if (tlsx6x_update_burn_cfg(parray, ignore_version_check) == 0) {
-		TLSC_INFO("update pass!\n");
+		TLSC_INFO("Flashing ROM configuration array complete!\n");
 	} else {
-		TLSC_ERROR("update fail!\n");
+		TLSC_ERROR("Flashing ROM configuration array failed! (tlsc6x_burn_cfg)\n");
 	}
 
 	return 1;		/* need hw reset */
