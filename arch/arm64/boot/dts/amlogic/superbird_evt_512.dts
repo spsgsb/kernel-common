@@ -1026,8 +1026,9 @@
 	tmd27721@39 {
 		compatible = "amstaos,tmd2772";
 		reg = <0x39>;
+		enable-proxy = "false";
+		enable-als = "true";
 	};
-	
 };
 
 &i2c3 {

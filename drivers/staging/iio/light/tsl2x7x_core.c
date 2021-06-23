@@ -30,6 +30,7 @@
 #include <linux/iio/events.h>
 #include <linux/iio/iio.h>
 #include <linux/iio/sysfs.h>
+#include <linux/of.h>
 #include "tsl2x7x.h"
 
 /* Cal defs*/
@@ -125,6 +126,10 @@
 #define TSL2X7X_MAX_TIMER_CNT          (0xFF)
 
 #define TSL2X7X_MIN_ITIME 3
+
+/* enable flags */
+bool enable_proxy = 1;
+bool enable_als = 1;
 
 /* TAOS txx2x7x Device family members */
 enum {
@@ -287,6 +292,33 @@ static const u8 device_channel_config[] = {
 	ALSPRX2,
 	ALSPRX2
 };
+
+
+/**
+ * tsl2x7x_dt_int_read() - Read a boolean value from the device tree
+ * @dev:        device struct
+ * @key:        device tree key to read
+ */
+static bool
+tsl2x7x_dt_int_read(struct i2c_client *client, const char *key)
+{
+	struct device_node *np = client->dev.of_node;
+	const char * val;
+	int r = 0;
+
+	if((val= kzalloc(16, GFP_KERNEL)) == NULL)
+		return -ENOMEM;
+
+	if(! of_property_read_bool(np, key))
+		return -EINVAL;
+
+	if((r= of_property_read_string(np, key, &val)) == 0)
+		return strcmp(val, "true") == 0;
+
+	dev_info(&client->dev, "Can't read property %s (ERROR = %d), defaulting to 'true'\n", key, r);
+	return 1;
+}
+
 
 /**
  * tsl2x7x_i2c_read() - Read a byte from a register.
@@ -732,9 +764,11 @@ static int tsl2x7x_chip_on(struct iio_dev *indio_dev)
 	 * NOW enable the ADC
 	 * initialize the desired mode of operation
 	 */
-	utmp = TSL2X7X_CNTL_PWR_ON |
-			TSL2X7X_CNTL_ADC_ENBL |
-			TSL2X7X_CNTL_PROX_DET_ENBL;
+	utmp = TSL2X7X_CNTL_PWR_ON;
+	if(enable_als)
+		utmp |=	TSL2X7X_CNTL_ADC_ENBL;
+	if(enable_proxy)
+		utmp |= TSL2X7X_CNTL_PROX_DET_ENBL;
 	ret = i2c_smbus_write_byte_data(chip->client,
 					TSL2X7X_CMD_REG | TSL2X7X_CNTRL, utmp);
 	if (ret < 0) {
@@ -1894,6 +1928,9 @@ static int tsl2x7x_probe(struct i2c_client *clientp,
 	unsigned char device_id;
 	struct iio_dev *indio_dev;
 	struct tsl2X7X_chip *chip;
+
+	enable_proxy = tsl2x7x_dt_int_read(clientp, "enable-proxy");
+	enable_als = tsl2x7x_dt_int_read(clientp, "enable-als");
 
 	indio_dev = devm_iio_device_alloc(&clientp->dev, sizeof(*chip));
 	if (!indio_dev)
