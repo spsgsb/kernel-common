@@ -303,19 +303,17 @@ static bool
 tsl2x7x_dt_int_read(struct i2c_client *client, const char *key)
 {
 	struct device_node *np = client->dev.of_node;
-	const char * val;
-	int r = 0;
-
-	if((val= kzalloc(16, GFP_KERNEL)) == NULL)
-		return -ENOMEM;
+	const char * val = NULL;
+	int e = 0;
 
 	if(! of_property_read_bool(np, key))
 		return -EINVAL;
 
-	if((r= of_property_read_string(np, key, &val)) == 0)
+	if((e= of_property_read_string(np, key, &val)) == 0)
 		return strcmp(val, "true") == 0;
 
-	dev_info(&client->dev, "Can't read property %s (ERROR = %d), defaulting to 'true'\n", key, r);
+	dev_info(&client->dev, "Can't read property %s (ERROR = %d), defaulting to 'true'\n", key, e);
+
 	return 1;
 }
 
