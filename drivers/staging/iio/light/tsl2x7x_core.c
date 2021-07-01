@@ -128,7 +128,7 @@
 #define TSL2X7X_MIN_ITIME 3
 
 /* enable flags */
-int enable_proxy = 1;
+int enable_proxy = 0;
 int enable_als = 1;
 
 /* TAOS txx2x7x Device family members */
