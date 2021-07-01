@@ -128,8 +128,8 @@
 #define TSL2X7X_MIN_ITIME 3
 
 /* enable flags */
-bool enable_proxy = 1;
-bool enable_als = 1;
+int enable_proxy = 1;
+int enable_als = 1;
 
 /* TAOS txx2x7x Device family members */
 enum {
@@ -298,9 +298,10 @@ static const u8 device_channel_config[] = {
  * tsl2x7x_dt_int_read() - Read a boolean value from the device tree
  * @dev:        device struct
  * @key:        device tree key to read
+ * @def:        default value if not found in the device tree
  */
-static bool
-tsl2x7x_dt_int_read(struct i2c_client *client, const char *key)
+static int
+tsl2x7x_dt_bool_read(struct i2c_client *client, const char *key, const int def)
 {
 	struct device_node *np = client->dev.of_node;
 	const char * val = NULL;
@@ -312,9 +313,10 @@ tsl2x7x_dt_int_read(struct i2c_client *client, const char *key)
 	if((e= of_property_read_string(np, key, &val)) == 0)
 		return strcmp(val, "true") == 0;
 
-	dev_info(&client->dev, "Can't read property %s (ERROR = %d), defaulting to 'true'\n", key, e);
+	dev_info(&client->dev, "Can't read property %s (ERROR = %d), defaulting to '%s'\n",
+		 key, e, (def?"enabled":"disabled"));
 
-	return 1;
+	return def;
 }
 
 
@@ -1926,9 +1928,7 @@ static int tsl2x7x_probe(struct i2c_client *clientp,
 	unsigned char device_id;
 	struct iio_dev *indio_dev;
 	struct tsl2X7X_chip *chip;
-
-	enable_proxy = tsl2x7x_dt_int_read(clientp, "enable-proxy");
-	enable_als = tsl2x7x_dt_int_read(clientp, "enable-als");
+	int en_proxy, en_als;
 
 	indio_dev = devm_iio_device_alloc(&clientp->dev, sizeof(*chip));
 	if (!indio_dev)
@@ -1937,6 +1937,17 @@ static int tsl2x7x_probe(struct i2c_client *clientp,
 	chip = iio_priv(indio_dev);
 	chip->client = clientp;
 	i2c_set_clientdata(clientp, indio_dev);
+
+	en_proxy = tsl2x7x_dt_bool_read(clientp, "enable-proxy", enable_proxy);
+	en_als = tsl2x7x_dt_bool_read(clientp, "enable-als", enable_als);
+
+	if(en_proxy >= 0)
+		enable_proxy = en_proxy;
+	dev_info(&chip->client->dev, "Proxy Sensor is %s.\n", (enable_proxy?"enabled":"disabled"));
+
+	if(en_als >= 0)
+		enable_als = en_als;
+	dev_info(&chip->client->dev, "Ambient Light Sensor is %s.\n", (enable_als?"enabled":"disabled"));
 
 	ret = tsl2x7x_i2c_read(chip->client,
 			       TSL2X7X_CHIPID, &device_id);
