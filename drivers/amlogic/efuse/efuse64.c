@@ -70,7 +70,6 @@ unsigned int efuse_get_max_cmd;
 	}
 DEFINE_EFUEKEY_SHOW_ATTR(mac_bt)
 DEFINE_EFUEKEY_SHOW_ATTR(mac_wifi)
-DEFINE_EFUEKEY_SHOW_ATTR(f_serial)
 
 static ssize_t  show_usid(struct class *cla,
                           struct class_attribute *attr,
@@ -99,7 +98,6 @@ static ssize_t  show_usid(struct class *cla,
 DEFINE_EFUEKEY_STORE_ATTR(mac_bt)
 DEFINE_EFUEKEY_STORE_ATTR(mac_wifi)
 DEFINE_EFUEKEY_STORE_ATTR(usid)
-DEFINE_EFUEKEY_STORE_ATTR(f_serial)
 
 int efuse_getinfo(char *item, struct efusekey_info *info)
 {
@@ -596,8 +594,6 @@ static struct class_attribute efuse_class_attrs[] = {
 	__ATTR(mac_wifi, 0400, show_mac_wifi, store_mac_wifi),
 
 	__ATTR(usid, 0444, show_usid, store_usid),
-
-	__ATTR(f_serial, 0400, show_f_serial, store_f_serial),
 
 	__ATTR_WO(amlogic_set),
 
