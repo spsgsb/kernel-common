@@ -28,6 +28,8 @@
 
 #define DRV_NAME "rotary-encoder"
 
+#define DEFAULT_DEBOUNCE_INTERVAL 5
+
 enum rotary_encoder_encoding {
 	ROTENC_GRAY,
 	ROTENC_BINARY,
@@ -54,6 +56,9 @@ struct rotary_encoder {
 	signed char dir;	/* 1 - clockwise, -1 - CCW */
 
 	unsigned int last_stable;
+
+	u32 debounce_interval;
+	u64 t_last_event;
 };
 
 static unsigned int rotary_encoder_get_state(struct rotary_encoder *encoder)
@@ -76,6 +81,14 @@ static unsigned int rotary_encoder_get_state(struct rotary_encoder *encoder)
 
 static void rotary_encoder_report_event(struct rotary_encoder *encoder)
 {
+	u64 t_event = ktime_get_ns();
+
+	/* Debounce. Compare event timestamps to debounce interval declared in device tree. */
+	if ((t_event - encoder->t_last_event) < encoder->debounce_interval)
+		return;
+
+	encoder->t_last_event = ktime_get_ns();
+	
 	if (encoder->relative_axis) {
 		input_report_rel(encoder->input,
 				 encoder->axis, encoder->dir);
@@ -216,6 +229,15 @@ static int rotary_encoder_probe(struct platform_device *pdev)
 		steps_per_period = device_property_read_bool(dev,
 					"rotary-encoder,half-period") ? 2 : 1;
 	}
+
+	err = device_property_read_u32(dev, "debounce-interval",
+				       &(encoder->debounce_interval));
+	if (err) {
+		encoder->debounce_interval = DEFAULT_DEBOUNCE_INTERVAL;
+	}
+	/* Timestamps in ns, debounce interval in ms */
+	encoder->debounce_interval = encoder->debounce_interval * 1000000;
+	encoder->t_last_event = ktime_get_ns();
 
 	encoder->rollover =
 		device_property_read_bool(dev, "rotary-encoder,rollover");
