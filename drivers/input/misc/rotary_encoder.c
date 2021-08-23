@@ -87,7 +87,7 @@ static void rotary_encoder_report_event(struct rotary_encoder *encoder)
 	if ((t_event - encoder->t_last_event) < encoder->debounce_interval)
 		return;
 
-	encoder->t_last_event = ktime_get_ns();
+	encoder->t_last_event = t_event;
 	
 	if (encoder->relative_axis) {
 		input_report_rel(encoder->input,
