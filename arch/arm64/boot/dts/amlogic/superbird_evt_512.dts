@@ -1351,8 +1351,7 @@
 		mux {
 			pins = "GPIOH_5";
 			function = "gpio_periphs";
-			bias-pull-up;
-			output-high;
+			output-low;
                         drive-strength = "1";
 		};
 	};
