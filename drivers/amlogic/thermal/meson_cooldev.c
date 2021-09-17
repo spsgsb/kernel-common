@@ -128,7 +128,9 @@ static int meson_set_min_status(struct thermal_cooling_device *cdev,
 	if (!tzdnp)
 		goto end;
 	for_each_available_child_of_node(tzdnp, child) {
-		coolmap = of_find_node_by_name(child, "cooling-maps");
+		coolmap = of_get_child_by_name(child, "cooling-maps");
+		if (!coolmap)
+			continue;
 		for_each_available_child_of_node(coolmap, gchild) {
 			struct of_phandle_args cooling_spec;
 			int ret;
