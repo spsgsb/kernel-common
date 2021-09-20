@@ -28,6 +28,9 @@
 #include <linux/delay.h>
 #include <linux/notifier.h>
 #include <linux/of_device.h>
+#include <linux/of_fdt.h>
+#include <linux/of.h>
+#include <linux/firmware.h>
 #include <linux/pwm.h>
 #include <linux/amlogic/pwm_meson.h>
 #include <linux/amlogic/cpu_version.h>
@@ -3445,6 +3448,53 @@ static void aml_bl_init_status_update(void)
 	}
 }
 
+static int aml_bl_load_overlay(struct platform_device *pdev)
+{
+	struct aml_bl_drv_s *bl_drv;
+	const struct firmware *fw;
+	struct device_node *overlay;
+	static void *overlay_data;
+	size_t size;
+	int ret = 0;
+
+	bl_drv = aml_bl_get_driver();
+
+	ret = request_firmware(&fw, "aml_bl/backlight_pwm_overlay.dto",
+		bl_drv->dev);
+	if (ret < 0) {
+		BLERR("%s: aml_bl/backlight_pwm_overlay.dto\n", pdev->name);
+		goto no_cleanup_fw;
+	}
+	size = fw->size;
+	overlay_data = kmemdup(fw->data, size, GFP_KERNEL);
+
+	of_fdt_unflatten_tree(overlay_data, NULL, &overlay);
+	if (!overlay) {
+		BLERR("%s: Unflattening overlay tree failed\n", __func__);
+		ret = -1;
+		goto cleanup_fw;
+	}
+	ret = of_resolve_phandles(overlay);
+	if (ret < 0) {
+		BLERR("%s: Failed to resolve phandles: %d\n",
+			__func__, ret);
+		goto cleanup_fw;
+	}
+	ret = of_overlay_create(overlay);
+	if (ret < 0) {
+		BLERR("%s: Failed to create overlay: %d\n", __func__, ret);
+		goto cleanup_fw;
+	}
+
+	BLPR("loading overlay OK\n");
+cleanup_fw:
+	if (fw)
+		release_firmware(fw);
+no_cleanup_fw:
+
+	return ret;
+}
+
 static int aml_bl_probe(struct platform_device *pdev)
 {
 	const struct of_device_id *match;
@@ -3471,6 +3521,9 @@ static int aml_bl_probe(struct platform_device *pdev)
 		BLERR("driver malloc error\n");
 		return -ENOMEM;
 	}
+
+	aml_bl_load_overlay(pdev);
+
 	match = of_match_device(bl_dt_match_table, &pdev->dev);
 	if (match == NULL) {
 		BLERR("%s: no match table\n", __func__);
