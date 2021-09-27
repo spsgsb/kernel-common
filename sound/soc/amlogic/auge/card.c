@@ -825,7 +825,7 @@ static int aml_card_parse_of(struct device_node *node,
 							   i, false);
 			if (ret < 0) {
 				of_node_put(np);
-				goto card_parse_end;
+				goto card_parse_lb_end;
 			}
 			i++;
 		}
@@ -833,18 +833,19 @@ static int aml_card_parse_of(struct device_node *node,
 		/* For single DAI link & old style of DT node */
 		ret = aml_card_dai_link_of(node, priv, 0, true);
 		if (ret < 0)
-			goto card_parse_end;
+			goto card_parse_lb_end;
 	}
 
 	ret = aml_card_parse_card_name(&priv->snd_card, PREFIX);
 	if (ret < 0)
-		goto card_parse_end;
+		goto card_parse_lb_end;
 
 	ret = aml_card_parse_aux_devs(node, priv);
 
+card_parse_lb_end:
+	of_node_put(lb_link);
 card_parse_end:
 	of_node_put(dai_link);
-	of_node_put(lb_link);
 
 	return ret;
 }
