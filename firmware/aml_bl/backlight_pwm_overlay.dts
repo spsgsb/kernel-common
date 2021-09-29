@@ -1,0 +1,25 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target = <&pinctrl_periphs>;
+		__overlay__ {
+			new_bl_pin: new_bl_pin {
+				mux {
+					pins = "GPIOH_5";
+					function = "gpio_periphs";
+					output-low;
+					drive-strength = "1";
+				};
+			};
+		};
+	};
+
+	fragment@1 {
+		target-path = "/backlight";
+		__overlay__ {
+			pinctrl-1 = <&new_bl_pin>;
+		};
+	};
+};
