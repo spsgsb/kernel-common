@@ -51,7 +51,7 @@
 	};
 
 	drm_lcd: drm-lcd {
-		status = "disabled";
+		status = "okay";
 		compatible = "amlogic,drm-lcd";
 		dev_name = "meson-lcd";
 		ports {
@@ -67,7 +67,7 @@
 	};
 
 	drm_vpu: drm-vpu@0xff900000  {
-		status = "disabled";
+		status = "okay";
 		compatible = "amlogic,meson-g12a-vpu";
 		memory-region = <&logo_reserved>;
 		reg = <0x0 0xff900000 0x0 0x40000>,
