@@ -595,7 +595,7 @@ ding*/
 					0xfd 1 10	/*delay(ms)*/
 					0x05 1 0x10
 					0xff 0xff>;	/*ending*/
-			extern_init = <8>; /*0xff for invalid*/
+			extern_init = <9>; /*0xff for invalid*/
 			/* power step: type, index, value, delay(ms) */
 			/* power type:
 			 * (0=cpu_gpio, 1=pmu_gpio,
