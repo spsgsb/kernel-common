@@ -152,11 +152,22 @@ enum drm_mode_status am_lcd_connector_mode_valid(
 	return MODE_OK;
 }
 
+static struct drm_encoder *am_lcd_best_encoder
+	(struct drm_connector *connector)
+{
+	struct am_drm_lcd_s *lcd;
+
+	lcd = con_to_lcd(connector);
+	if (!lcd)
+		return NULL;
+
+	return &lcd->encoder;
+}
 
 static const struct drm_connector_helper_funcs am_lcd_connector_helper_funcs = {
 	.get_modes = am_lcd_connector_get_modes,
 	.mode_valid = am_lcd_connector_mode_valid,
-	//.best_encoder
+	.best_encoder = am_lcd_best_encoder,
 	//.atomic_best_encoder
 };
 
@@ -640,6 +651,9 @@ static int am_meson_lcd_bind(struct device *dev, struct device *master,
 	encoder_type = DRM_MODE_ENCODER_LVDS;
 	connector_type = DRM_MODE_CONNECTOR_LVDS;
 
+	/* force possible_crtcs */
+	encoder->possible_crtcs = BIT(0);
+
 	/* Encoder */
 	drm_encoder_helper_add(encoder, &am_lcd_encoder_helper_funcs);
 	ret = drm_encoder_init(drm, encoder, &am_lcd_encoder_funcs,
@@ -660,10 +674,12 @@ static int am_meson_lcd_bind(struct device *dev, struct device *master,
 		return ret;
 	}
 
-	/* force possible_crtcs */
-	encoder->possible_crtcs = BIT(0);
-
-	drm_mode_connector_attach_encoder(connector, encoder);
+	ret = drm_mode_connector_attach_encoder(connector, encoder);
+	if (ret) {
+		pr_err("error: am_drm_lcd: Failed to attach encoder to connector\n");
+		return ret;
+	}
+	drm_connector_register(connector);
 
 	pr_info("am_drm_lcd: register ok\n");
 
