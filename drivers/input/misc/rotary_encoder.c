@@ -28,7 +28,7 @@
 
 #define DRV_NAME "rotary-encoder"
 
-#define DEFAULT_DEBOUNCE_INTERVAL 5
+#define DEFAULT_DEBOUNCE_INTERVAL 20  /* ms */
 
 enum rotary_encoder_encoding {
 	ROTENC_GRAY,
