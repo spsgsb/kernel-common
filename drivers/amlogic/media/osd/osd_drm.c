@@ -838,7 +838,7 @@ int osd_drm_init(struct osd_device_data_s *osd_meson_dev)
 		osd_init_hw(1, 0, osd_meson_dev);
 	else
 		osd_init_hw(0, 0, osd_meson_dev);
-	if (osd_meson_dev->osd_ver <= OSD_NORMAL) {
+	if (osd_meson_dev->osd_ver <= OSD_SIMPLE) {
 		/* freescale switch from osd2 to osd1*/
 		osd_log_info("freescale switch from osd2 to osd1\n");
 		osd_set_free_scale_mode_hw(OSD2, 1);
