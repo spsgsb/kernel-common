@@ -10401,7 +10401,6 @@ void osd_page_flip(struct osd_plane_map_s *plane_map)
 			}
 			if (osd_hw.hw_rdma_en)
 				osd_mali_afbc_start();
-			osd_wait_vsync_hw();
 		} else if (plane_map->phy_addr && plane_map->src_w
 				&& plane_map->src_h && index == OSD2) {
 			color = convert_panel_format(plane_map->format);
@@ -10425,14 +10424,13 @@ void osd_page_flip(struct osd_plane_map_s *plane_map)
 			if (osd_hw.hw_rdma_en)
 				osd_mali_afbc_start();
 		}
+		osd_wait_vsync_hw();
 	} else {
 		if (plane_map->phy_addr && plane_map->src_w
 				&& plane_map->src_h) {
-#if 1
 			osd_hw.fb_gem[index].canvas_idx =
 				osd_extra_idx[index][ext_canvas_id[index]];
 			ext_canvas_id[index] ^= 1;
-#endif
 			if (osd_hw.osd_afbcd[index].enable)
 				format = plane_map->format | AFBC_EN;
 			else

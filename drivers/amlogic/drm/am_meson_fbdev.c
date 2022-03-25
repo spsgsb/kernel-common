@@ -195,7 +195,7 @@ int am_meson_drm_fbdev_init(struct drm_device *dev)
 err_drm_fb_helper_fini:
 	drm_fb_helper_fini(helper);
 err_free:
-	kfree(fbdev_cma);
+	kfree(helper);
 	return ret;
 }
 
