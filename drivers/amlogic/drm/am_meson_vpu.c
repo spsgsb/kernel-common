@@ -38,6 +38,7 @@
 
 #include "osd.h"
 #include "osd_drm.h"
+#include "am_meson_drv.h"
 #ifdef CONFIG_DRM_MESON_USE_ION
 #include "am_meson_fb.h"
 #endif
@@ -206,7 +207,7 @@ static struct osd_device_data_s osd_axg = {
 
 static struct osd_device_data_s osd_g12a = {
 	.cpu_id = __MESON_CPU_MAJOR_ID_G12A,
-	.osd_ver = OSD_HIGH_ONE,
+	.osd_ver = OSD_NORMAL,
 	.afbc_type = MALI_AFBC,
 	.osd_count = 4,
 	.has_deband = 1,
