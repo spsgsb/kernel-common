@@ -41,4 +41,4 @@ targets += $(DTB_LIST)
 
 dtbs: $(addprefix $(obj)/, $(DTB_LIST))
 
-clean-files := dts/*.dtb *.dtb
+clean-files := dts/*.dtb *.dtb dts/*.dtbo *.dtbo
