@@ -3765,10 +3765,13 @@ static void l2cap_conf_rfc_get(struct l2cap_chan *chan, void *rsp, int len)
 			break;
 		switch (type) {
 		case L2CAP_CONF_RFC:
-			if (olen == sizeof(rfc))
-				memcpy(&rfc, (void *)val, olen);
+			if (olen != sizeof(rfc))
+				break;
+			memcpy(&rfc, (void *)val, olen);
 			break;
 		case L2CAP_CONF_EWS:
+			if (olen != 2)
+				break;
 			txwin_ext = val;
 			break;
 		}
